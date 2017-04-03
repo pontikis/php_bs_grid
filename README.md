@@ -3,6 +3,8 @@ php datagrid with jquery, jquery-ui and bootstrap frontend
 
 ## Features
 
+Displays database data in table format.
+
 * Customizable columns
 * Pagination
 * Simple column sorting
@@ -13,7 +15,7 @@ php datagrid with jquery, jquery-ui and bootstrap frontend
 ## Dependencies
 
 ### back-end
-* dacapo (database abstraction) - optional https://github.com/pontikis/dacapo
+* dacapo (database abstraction - MySQL, PostGreSQL) - optional https://github.com/pontikis/dacapo
 
 ### front-end
 * jquery https://jquery.com/ (current version 3.1.1)
