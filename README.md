@@ -1,2 +1,2 @@
 # php_bs_grid
-php datagrid with jquery, bootstrap frontend
+php datagrid with jquery, jquery-ui and bootstrap frontend
