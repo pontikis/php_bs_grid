@@ -11,6 +11,7 @@ Displays database data in table format.
 * Advanced sorting
 * Filters
 * CSV export
+* Multilanguage
 
 ## Dependencies
 
