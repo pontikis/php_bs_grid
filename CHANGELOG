@@ -1,0 +1,20 @@
+php_bs_grid
+===========
+
+php datagrid with jquery, bootstrap frontend
+
+Copyright Christos Pontikis http://www.pontikis.net
+
+License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
+
+
+Release 0.9.0 (3 Apr 2017)
+--------------------------
+
+* Basic functionality
+
+
+Release 0.1.0
+-------------
+
+* just started
