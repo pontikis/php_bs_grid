@@ -9,9 +9,10 @@ Displays database data in table format.
 * Pagination
 * Simple column sorting
 * Advanced sorting
-* Filters
+* Filters (text, lookup, date)
 * CSV export
 * Multilanguage
+* Responsive design
 
 ## Dependencies
 
