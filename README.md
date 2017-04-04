@@ -1,6 +1,8 @@
 # php_bs_grid
 php datagrid with jquery, jquery-ui and bootstrap frontend
 
+Simple, secure, easy to use.
+
 ## Features
 
 Displays database data in table format.
