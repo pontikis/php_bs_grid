@@ -1,11 +1,10 @@
 /**
- * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class.
- *               <p>License MIT
- *               <br />Copyright Christos Pontikis <a href="http://www.pontikis.net">http://www.pontikis.net</a>
- *               <br />Project page <a href="https://github.com/pontikis/php_bs_grid">https://github.com/pontikis/php_bs_grid</a>
- * @version 0.9.0 (Apr 2017)
+ * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
+ * @version 0.8.0 (9 Apr 2017)
+ * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
- * @requires jquery (current version 3.1.1), twitter bootstrap (current version 3.3.7), jQuery UI datepicker optional (current version 1.12.1)
+ * @copyright Christos Pontikis http://www.pontikis.net
+ * @requires jquery (tested with 3.1.1), twitter bootstrap (tested with 3.3.7), jQuery UI datepicker (tested with 1.12.1)
  */
 "use strict";
 (function($) {
@@ -49,7 +48,7 @@
                     elem_columns_switcher = $("#" + settings.columns_switcher_id),
                     elem_columns_sortable = $(settings.col_sortable_selector),
                     elem_sort_simple_field = $("#" + settings.sort_simple_field_id),
-                    elem_sort_simple_mode = $("#" + settings.sort_simple_mode_id),
+                    elem_sort_simple_order = $("#" + settings.sort_simple_order_id),
                     elem_sort_advanced = $("#" + settings.sort_advanced_id),
 
                     elem_criteria_apply = $("#" + settings.criteria_apply_id),
@@ -60,12 +59,12 @@
 
                     v_default_page_num = settings.default_page_num,
                     v_export_csv_none = settings.export_csv_none,
-                    v_export_csv_encoding_default = settings.export_csv_encoding_default,
+                    v_export_csv_encoding_local = settings.export_csv_encoding_local,
                     v_export_csv_encoding_utf8 = settings.export_csv_encoding_utf8,
 
                     criteria = settings.criteria,
                     elem_criteria,
-                    elem_criteria_mode,
+                    elem_criteria_operator,
                     datepicker_params;
 
                 var getCriterionByName = function(criterion_name) {
@@ -87,10 +86,10 @@
                             $.each(criteria, function(key, value) {
 
                                 if(value.criteria_type === "text") {
-                                    elem_criteria_mode = $("#" + value.dropdown_id);
+                                    elem_criteria_operator = $("#" + value.dropdown_id);
                                     elem_criteria = $("#" + value.input_id);
 
-                                    if(parseInt(elem_criteria_mode.val()) === value.default_mode) {
+                                    if(parseInt(elem_criteria_operator.val()) === value.operator_ignore) {
                                         elem_criteria.val("");
                                     }
                                 }
@@ -103,10 +102,10 @@
 
                                 if(value.criteria_type === "lookup") {
 
-                                    elem_criteria_mode = $("#" + value.dropdown_id);
+                                    elem_criteria_operator = $("#" + value.dropdown_id);
                                     elem_criteria = $("#" + value.dropdown_lookup_id);
 
-                                    if(parseInt(elem_criteria_mode.val()) === value.mode_equal) {
+                                    if(parseInt(elem_criteria_operator.val()) === value.operator_equal) {
                                         elem_criteria.show();
                                     } else {
                                         elem_criteria.hide();
@@ -121,27 +120,27 @@
                             $.each(criteria, function(key, value) {
 
                                 if(value.criteria_type === "date_start") {
-                                    elem_criteria_mode = $("#" + value.dropdown_id);
+                                    elem_criteria_operator = $("#" + value.dropdown_id);
                                     elem_criteria = $("#" + value.input_id);
 
                                     var assoc = getCriterionByName(value.associated_criteria_name),
                                         elem_criteria_label_assoc = $("#" + assoc.label_id),
-                                        elem_criteria_mode_assoc = $("#" + assoc.dropdown_id),
+                                        elem_criteria_operator_assoc = $("#" + assoc.dropdown_id),
                                         elem_criteria_assoc = $("#" + assoc.input_id);
 
-                                    var criteria_date_mode = parseInt(elem_criteria_mode.val());
-                                    if(criteria_date_mode === value.default_mode) {
+                                    var criteria_date_operator = parseInt(elem_criteria_operator.val());
+                                    if(criteria_date_operator === value.operator_ignore) {
                                         elem_criteria.val("");
                                     }
-                                    if(criteria_date_mode === value.mode_equal) {
+                                    if(criteria_date_operator === value.operator_equal) {
                                         elem_criteria_label_assoc.hide();
-                                        elem_criteria_mode_assoc.val(value.default_mode);
-                                        elem_criteria_mode_assoc.hide();
+                                        elem_criteria_operator_assoc.val(value.operator_ignore);
+                                        elem_criteria_operator_assoc.hide();
                                         elem_criteria_assoc.val("");
                                         elem_criteria_assoc.hide();
                                     } else {
                                         elem_criteria_label_assoc.show();
-                                        elem_criteria_mode_assoc.show();
+                                        elem_criteria_operator_assoc.show();
                                         elem_criteria_assoc.show();
                                     }
 
@@ -154,9 +153,9 @@
                             $.each(criteria, function(key, value) {
 
                                 if(value.criteria_type === "date_end") {
-                                    elem_criteria_mode = $("#" + value.dropdown_id);
+                                    elem_criteria_operator = $("#" + value.dropdown_id);
                                     elem_criteria = $("#" + value.input_id);
-                                    if(parseInt(elem_criteria_mode.val()) === value.default_mode) {
+                                    if(parseInt(elem_criteria_operator.val()) === value.operator_ignore) {
                                         elem_criteria.val("");
                                     }
                                 }
@@ -209,7 +208,7 @@
 
                 /* add new record button ------------------------------------ */
                 elem_addnew_record.click(function() {
-                    location.href = settings.url_addnew_record;
+                    location.href = decodeURI(settings.url_addnew_record);
                 });
 
                 /* columns to display --------------------------------------- */
@@ -226,14 +225,14 @@
                 elem_columns_sortable.click(function() {
                     var col_id = $(this).attr("id");
                     if(elem_sort_simple_field.val() === col_id) {
-                        if(elem_sort_simple_mode.val() === "ASC") {
-                            elem_sort_simple_mode.val("DESC");
+                        if(elem_sort_simple_order.val() === "ASC") {
+                            elem_sort_simple_order.val("DESC");
                         } else {
-                            elem_sort_simple_mode.val("ASC");
+                            elem_sort_simple_order.val("ASC");
                         }
                     } else {
                         elem_sort_simple_field.val(col_id);
-                        elem_sort_simple_mode.val("ASC");
+                        elem_sort_simple_order.val("ASC");
                     }
                     doSubmit("sort_simple");
                 });
@@ -241,17 +240,17 @@
                 /* advanced sorting ----------------------------------------- */
                 elem_sort_advanced.change(function() {
                     elem_sort_simple_field.val("");
-                    elem_sort_simple_mode.val("");
+                    elem_sort_simple_order.val("");
                     doSubmit("sort_advanced");
                 });
 
                 /* criteria ------------------------------------------------- */
                 $.each(criteria, function(key, value) {
                     if(value.criteria_type === "text") {
-                        elem_criteria_mode = $("#" + value.dropdown_id);
+                        elem_criteria_operator = $("#" + value.dropdown_id);
                         elem_criteria = $("#" + value.input_id);
 
-                        elem_criteria_mode.change(function() {
+                        elem_criteria_operator.change(function() {
                             arrange_criteria("text");
                             disableExport();
                         });
@@ -268,21 +267,21 @@
                         });
                     }
                     if(value.criteria_type === "lookup") {
-                        elem_criteria_mode = $("#" + value.dropdown_id);
+                        elem_criteria_operator = $("#" + value.dropdown_id);
                         elem_criteria = $("#" + value.dropdown_lookup_id);
 
                         elem_criteria.change(function() {
                             disableExport();
                         });
 
-                        elem_criteria_mode.change(function() {
+                        elem_criteria_operator.change(function() {
                             arrange_criteria("lookup");
                             disableExport();
                         });
 
                     }
                     if(value.criteria_type === "date_start") {
-                        elem_criteria_mode = $("#" + value.dropdown_id);
+                        elem_criteria_operator = $("#" + value.dropdown_id);
                         elem_criteria = $("#" + value.input_id);
 
                         datepicker_params = value.datepicker_params;
@@ -291,7 +290,7 @@
                         };
                         elem_criteria.datepicker(datepicker_params);
 
-                        elem_criteria_mode.change(function() {
+                        elem_criteria_operator.change(function() {
                             arrange_criteria("date_start");
                             disableExport();
                         });
@@ -308,7 +307,7 @@
                         });
                     }
                     if(value.criteria_type === "date_end") {
-                        elem_criteria_mode = $("#" + value.dropdown_id);
+                        elem_criteria_operator = $("#" + value.dropdown_id);
                         elem_criteria = $("#" + value.input_id);
 
                         datepicker_params = value.datepicker_params;
@@ -317,7 +316,7 @@
                         };
                         elem_criteria.datepicker(datepicker_params);
 
-                        elem_criteria_mode.change(function() {
+                        elem_criteria_operator.change(function() {
                             arrange_criteria("date_end");
                             disableExport();
                         });
@@ -343,31 +342,35 @@
 
                 /* clear criteria ------------------------------------------- */
                 elem_criteria_reset.click(function() {
-                    elem_page_num.val(1);
+                    elem_page_num.val(settings.default_page_num);
                     $.each(criteria, function(key, value) {
                         if(value.criteria_type === "text") {
-                            var elem_criteria_mode = $("#" + value.dropdown_id),
+                            var elem_criteria_operator = $("#" + value.dropdown_id),
                                 elem_criteria = $("#" + value.input_id);
                             elem_criteria.val("");
-                            elem_criteria_mode.val(value.default_mode);
+                            elem_criteria_operator.val(value.operator_ignore);
                         }
                         if(value.criteria_type === "lookup") {
-                            elem_criteria_mode = $("#" + value.dropdown_id);
-                            elem_criteria_mode.val(value.default_mode);
+                            elem_criteria_operator = $("#" + value.dropdown_id);
+                            elem_criteria_operator.val(value.operator_ignore);
                         }
                         if(value.criteria_type === "date_start") {
-                            elem_criteria_mode = $("#" + value.dropdown_id);
+                            elem_criteria_operator = $("#" + value.dropdown_id);
                             elem_criteria = $("#" + value.input_id);
                             elem_criteria.val("");
-                            elem_criteria_mode.val(value.default_mode);
+                            elem_criteria_operator.val(value.operator_ignore);
                         }
                         if(value.criteria_type === "date_end") {
-                            elem_criteria_mode = $("#" + value.dropdown_id);
+                            elem_criteria_operator = $("#" + value.dropdown_id);
                             elem_criteria = $("#" + value.input_id);
                             elem_criteria.val("");
-                            elem_criteria_mode.val(value.default_mode);
+                            elem_criteria_operator.val(value.operator_ignore);
                         }
                     });
+                    arrange_criteria("text");
+                    arrange_criteria("lookup");
+                    arrange_criteria("date_start");
+                    arrange_criteria("date_end");
                     doSubmit("reset_criteria");
                 });
 
@@ -376,7 +379,7 @@
                     var elem_id = $(this).attr("id"),
                         csv_encoding = elem_id.substr(12);
                     if(csv_encoding === "local") {
-                        elem_export_csv.val(v_export_csv_encoding_default);
+                        elem_export_csv.val(v_export_csv_encoding_local);
                     } else {
                         elem_export_csv.val(v_export_csv_encoding_utf8);
                     }
@@ -396,7 +399,7 @@
 
                         if(value.criteria_type === "text") {
 
-                            var elem_criteria_mode = $("#" + value.dropdown_id),
+                            var elem_criteria_operator = $("#" + value.dropdown_id),
                                 elem_criteria = $("#" + value.input_id);
 
                             if(elem_criteria.val()) {
@@ -404,12 +407,12 @@
                             }
                             ajax_data_to_pass[value.input_id] = elem_criteria.val();
 
-                            if(parseInt(elem_criteria_mode.val()) === value.default_mode && elem_criteria.val()) {
+                            if(parseInt(elem_criteria_operator.val()) === value.operator_ignore && elem_criteria.val()) {
                                 no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_mode, value.dropdown_id);
+                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
                                 return false;
                             }
-                            if(parseInt(elem_criteria_mode.val()) !== value.default_mode && !elem_criteria.val()) {
+                            if(parseInt(elem_criteria_operator.val()) !== value.operator_ignore && !elem_criteria.val()) {
                                 no_errors = false;
                                 show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
                                 return false;
@@ -418,22 +421,22 @@
 
                         if(value.criteria_type === "date_start") {
 
-                            elem_criteria_mode = $("#" + value.dropdown_id);
+                            elem_criteria_operator = $("#" + value.dropdown_id);
                             elem_criteria = $("#" + value.input_id);
 
                             if(elem_criteria.val()) {
                                 text_inputs_contain_value = true;
                             }
 
-                            ajax_data_to_pass[value.dropdown_id] = elem_criteria_mode.val();
+                            ajax_data_to_pass[value.dropdown_id] = elem_criteria_operator.val();
                             ajax_data_to_pass[value.input_id] = elem_criteria.val();
 
-                            if(parseInt(elem_criteria_mode.val()) === value.default_mode && elem_criteria.val()) {
+                            if(parseInt(elem_criteria_operator.val()) === value.operator_ignore && elem_criteria.val()) {
                                 no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_mode, value.dropdown_id);
+                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
                                 return false;
                             }
-                            if(parseInt(elem_criteria_mode.val()) !== value.default_mode && !elem_criteria.val()) {
+                            if(parseInt(elem_criteria_operator.val()) !== value.operator_ignore && !elem_criteria.val()) {
                                 no_errors = false;
                                 show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
                                 return false;
@@ -442,22 +445,22 @@
 
                         if(value.criteria_type === "date_end") {
 
-                            elem_criteria_mode = $("#" + value.dropdown_id);
+                            elem_criteria_operator = $("#" + value.dropdown_id);
                             elem_criteria = $("#" + value.input_id);
 
                             if(elem_criteria.val()) {
                                 text_inputs_contain_value = true;
                             }
 
-                            ajax_data_to_pass[value.dropdown_id] = elem_criteria_mode.val();
+                            ajax_data_to_pass[value.dropdown_id] = elem_criteria_operator.val();
                             ajax_data_to_pass[value.input_id] = elem_criteria.val();
 
-                            if(parseInt(elem_criteria_mode.val()) === value.default_mode && elem_criteria.val()) {
+                            if(parseInt(elem_criteria_operator.val()) === value.operator_ignore && elem_criteria.val()) {
                                 no_errors = false;
-                                show_bs_modal(bs_modal_id, elem_bs_modal_content, value.msg_missing_mode, value.dropdown_id);
+                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
                                 return false;
                             }
-                            if(parseInt(elem_criteria_mode.val()) !== value.default_mode && !elem_criteria.val()) {
+                            if(parseInt(elem_criteria_operator.val()) !== value.operator_ignore && !elem_criteria.val()) {
                                 no_errors = false;
                                 show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
                                 return false;
@@ -468,19 +471,23 @@
 
                     if(no_errors) {
                         if(text_inputs_contain_value) {
-                            $.ajax({
-                                url: settings.ajax_validate_form_url,
-                                type: "POST",
-                                data: ajax_data_to_pass,
-                                dataType: "json",
-                                success: function(data) {
-                                    if(data["error"]) {
-                                        show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, data["error"], data["focus"]);
-                                    } else {
-                                        doSubmitNoErrors(action);
+                            if(settings.ajax_validate_form_url) {
+                                $.ajax({
+                                    url: decodeURI(settings.ajax_validate_form_url),
+                                    type: "POST",
+                                    data: ajax_data_to_pass,
+                                    dataType: "json",
+                                    success: function(data) {
+                                        if(data["error"]) {
+                                            show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, data["error"], data["focus"]);
+                                        } else {
+                                            doSubmitNoErrors(action);
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            } else {
+                                doSubmitNoErrors(action);
+                            }
                         } else {
                             doSubmitNoErrors(action);
                         }
@@ -568,21 +575,21 @@
                 columns_to_display_id: "columns_to_display", // hidden
                 col_sortable_class: ".col-sortable",
                 col_sortable_selector: 'th.col-sortable',
-                sort_simple_field_id: "sort_simple_field",
-                sort_simple_mode_id: "sort_simple_mode",
+                sort_simple_field_id: "sort_simple_field",  // hidden
+                sort_simple_order_id: "sort_simple_order",  // hidden
                 sort_advanced_id: "sort_advanced",
 
                 criteria_apply_id: "criteria_apply",
                 criteria_reset_id: "criteria_reset",
 
-                export_csv_id: "export_csv",
+                export_csv_id: "export_csv",  // hidden
                 export_csv_buttons_selector: '[id^="export_data_"]',
 
                 default_page_num: 1,
                 columns_default: 1,
                 columns_more: 2,
                 export_csv_none: 1,
-                export_csv_encoding_default: 2,
+                export_csv_encoding_local: 2,
                 export_csv_encoding_utf8: 3
             };
         }
