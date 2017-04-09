@@ -1,0 +1,30 @@
+.ui-datepicker {
+    z-index: 10000 !important;
+}
+
+.align-right {
+    text-align: right;
+}
+
+.col-sortable {
+    text-decoration: underline;
+    cursor: ns-resize;
+}
+
+/* xs */
+.resp-align { text-align: left; }
+
+/* sm */
+@media(min-width:768px) {
+    .resp-align { text-align: right; }
+}
+
+/* md */
+@media(min-width:992px) {
+    .resp-align { text-align: right; }
+}
+
+/* lg */
+@media(min-width:1200px) {
+    .resp-align { text-align: right; }
+}

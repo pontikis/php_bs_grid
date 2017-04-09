@@ -19,7 +19,8 @@ Displays database data in table format.
 ## Dependencies
 
 ### back-end
-* dacapo (database abstraction - MySQL, PostGreSQL) - optional https://github.com/pontikis/dacapo
+* tested with php 5.6
+* dacapo (database abstraction - MySQL, PostGreSQL) - https://github.com/pontikis/dacapo
 
 ### front-end
 * jquery https://jquery.com/ (current version 3.1.1)
@@ -27,3 +28,5 @@ Displays database data in table format.
 * bootstrap http://getbootstrap.com/ (current version 3.3.7)
 
 ## How to use
+
+Coming soon
