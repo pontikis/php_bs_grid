@@ -1,6 +1,8 @@
 # php_bs_grid
 php datagrid with jquery, jquery-ui and bootstrap frontend
 
+Project page https://github.com/pontikis/php_bs_grid
+
 Simple, secure, easy to use.
 
 ## Features
