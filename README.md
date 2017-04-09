@@ -12,7 +12,7 @@ Displays database data in table format.
 * Simple column sorting
 * Advanced sorting
 * Filters (text, lookup, date)
-* Export (CSV, Excel .xlsx)
+* Export (CSV)
 * Multilanguage
 * Support prepared statements
 * Responsive design
