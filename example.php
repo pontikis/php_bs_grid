@@ -1,4 +1,7 @@
 <?php
+/**
+ * Example file for php_bs_grid v0.9.0
+ */
 require_once '/path/to/dacapo.class.php';
 require_once '/path/to/php_bs_grid.class.php';
 require_once '/path/to/php_bs_grid/constants.php';
