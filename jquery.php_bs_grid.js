@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.8.0 (9 Apr 2017)
+ * @version 0.9.0 (10 Apr 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
@@ -54,13 +54,12 @@
                     elem_criteria_apply = $("#" + settings.criteria_apply_id),
                     elem_criteria_reset = $("#" + settings.criteria_reset_id),
 
-                    elem_export_csv = $("#" + settings.export_csv_id),
-                    elem_export_csv_buttons = $(settings.export_csv_buttons_selector),
+                    elem_export_excel = $("#" + settings.export_excel_id),
+                    elem_export_excel_btn = $("#" + settings.export_excel_btn_id),
 
                     v_default_page_num = settings.default_page_num,
-                    v_export_csv_none = settings.export_csv_none,
-                    v_export_csv_encoding_local = settings.export_csv_encoding_local,
-                    v_export_csv_encoding_utf8 = settings.export_csv_encoding_utf8,
+                    v_export_excel_no = settings.export_excel_no,
+                    v_export_excel_yes = settings.export_excel_yes,
 
                     criteria = settings.criteria,
                     elem_criteria,
@@ -374,15 +373,9 @@
                     doSubmit("reset_criteria");
                 });
 
-                /* csv export ----------------------------------------------- */
-                elem_export_csv_buttons.click(function() {
-                    var elem_id = $(this).attr("id"),
-                        csv_encoding = elem_id.substr(12);
-                    if(csv_encoding === "local") {
-                        elem_export_csv.val(v_export_csv_encoding_local);
-                    } else {
-                        elem_export_csv.val(v_export_csv_encoding_utf8);
-                    }
+                /* Excel export --------------------------------------------- */
+                elem_export_excel_btn.click(function() {
+                    elem_export_excel.val(v_export_excel_yes);
                     elem_php_bs_grid_form.submit();
                 });
 
@@ -516,12 +509,12 @@
                             break;
                     }
 
-                    elem_export_csv.val(v_export_csv_none);
+                    elem_export_excel.val(v_export_excel_no);
                     elem_php_bs_grid_form.submit();
                 };
 
                 var disableExport = function() {
-                    elem_export_csv_buttons.prop("disabled", true);
+                    elem_export_excel_btn.prop("disabled", true);
                 };
 
                 var show_bs_modal = function(bs_modal_id, bs_modal_content_id, content_html, elem_focus_id) {
@@ -531,7 +524,7 @@
 
                     if(elem_focus_id) {
                         var elem_focus = $("#" + elem_focus_id);
-                        elem_bs_modal.on('hidden.bs.modal', function(e) {
+                        elem_bs_modal.on('hidden.bs.modal', function() {
                             elem_focus.focus();
                         });
                     }
@@ -582,15 +575,14 @@
                 criteria_apply_id: "criteria_apply",
                 criteria_reset_id: "criteria_reset",
 
-                export_csv_id: "export_csv",  // hidden
-                export_csv_buttons_selector: '[id^="export_data_"]',
+                export_excel_id: "export_excel",  // hidden
+                export_excel_btn_id: "export_excel_btn",
 
                 default_page_num: 1,
                 columns_default: 1,
                 columns_more: 2,
-                export_csv_none: 1,
-                export_csv_encoding_local: 2,
-                export_csv_encoding_utf8: 3
+                export_excel_no: 1,
+                export_excel_yes: 2
             };
         }
     };

@@ -135,30 +135,17 @@
 
             </div>
 
-            <!--  CSV export  -->
+            <!--  Excel export  -->
             <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"
                  style="margin-bottom: 0; margin-top: 5px;">
 
-				<?php if($dg->allowExportCSV()) { ?>
+				<?php if($dg->allowExportExcel()) { ?>
 
                     <button type="button"
-                            id="export_data_local"
-                            class="btn btn-sm btn-success"
-                            title="<?php print $dg->getString('export_data') ?>">
-                        <span class="glyphicon glyphicon-export"></span>
+                            id="export_excel_btn"
+                            class="btn btn-sm btn-success">
+                        <span class="glyphicon glyphicon-export"></span> <?php print $dg->getString('export_excel') ?>
                     </button>
-
-					<?php if($dg->showAdditionalCsvExportBtnUtf8()) { ?>
-
-                        <button type="button"
-                                id="export_data_utf8"
-                                class="btn btn-sm btn-success"
-                                title="<?php print $dg->getString('export_data') . ' (utf-8)' ?>">
-                            <span class="glyphicon glyphicon-export"></span>
-                            (utf-8)
-                        </button>
-
-					<?php } ?>
 
 				<?php } ?>
 
@@ -285,8 +272,8 @@
            value="<?php print $dg->getSortSimpleOrder() ?>">
 
     <input type="hidden"
-           id="export_csv"
-           name="export_csv"
-           value="<?php print $dg->getExportCSV() ?>">
+           id="export_excel"
+           name="export_excel"
+           value="<?php print $dg->getExportExcel() ?>">
 
 </form>

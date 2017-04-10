@@ -14,9 +14,9 @@ Displays database data in table format.
 * Simple column sorting
 * Advanced sorting
 * Filters (text, lookup, date)
-* Export (CSV)
+* Export (Excel .xlsx)
 * Multilanguage
-* Support prepared statements
+* Prepared statements supported
 * Responsive design
 
 ## Dependencies
@@ -24,6 +24,7 @@ Displays database data in table format.
 ### back-end
 * tested with php 5.6
 * dacapo (database abstraction - MySQL, PostGreSQL) - https://github.com/pontikis/dacapo
+* PHPExcel is required for export https://github.com/PHPOffice/PHPExcel
 
 ### front-end
 * jquery https://jquery.com/ (current version 3.1.1)
@@ -32,4 +33,6 @@ Displays database data in table format.
 
 ## How to use
 
-Coming soon
+See example.php
+
+Documentation coming soon

@@ -9,15 +9,16 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.8.0 (9 Apr 2017)
+ * @version    0.9.0 (10 Apr 2017)
  *
  */
 class php_bs_grid {
 
 	/**
-	 * properties which passed as arguments (23)
+	 * properties which passed as arguments (22)
 	 */
 	private $db_link;
+	private $php_excel;
 	private $a_columns;
 	private $select_count_column;
 	private $select_from_sql;
@@ -31,18 +32,16 @@ class php_bs_grid {
 	private $sort_asc_indicator;
 	private $sort_desc_indicator;
 	private $advanced_sorting_options;
-	private $allow_export_csv;
-	private $export_csv_options;
-	private $export_csv_encoding_local;
-	private $export_csv_additional_utf8;
-	private $export_csv_basename;
+	private $allow_export_excel;
+	private $export_excel_options;
+	private $export_excel_basename;
 	private $main_template_path;
 	private $criteria_template_path;
 	private $form_action;
 	private $a_strings;
 
 	/**
-	 * properties affected from user interface (8)
+	 * properties affected from user interface (7)
 	 */
 	private $page_num;
 	private $rows_per_page;
@@ -50,8 +49,7 @@ class php_bs_grid {
 	private $sort_simple_field;
 	private $sort_simple_order;
 	private $sort_advanced;
-	private $export_csv;
-	private $do_csv_export;
+	private $export_excel;
 
 	/**
 	 * other properties (14)
@@ -94,13 +92,15 @@ class php_bs_grid {
 	/**
 	 * php_bs_grid constructor.
 	 * @param dacapo $db_link
+	 * @param PHPExcel $phpexel
 	 * @param array $dg_params
 	 */
-	public function __construct(dacapo $db_link, array $dg_params) {
+	public function __construct(dacapo $db_link, PHPExcel $php_excel, array $dg_params) {
 		/**
-		 * properties which passed as arguments (23)
+		 * properties which passed as arguments (22)
 		 */
 		$this->db_link = $db_link;
+		$this->php_excel = $php_excel;
 		$this->a_columns = $dg_params['dg_columns'];
 		$this->select_count_column = $dg_params['dg_select_count_column'];
 		$this->select_from_sql = $dg_params['dg_select_from_sql'];
@@ -114,18 +114,16 @@ class php_bs_grid {
 		$this->sort_asc_indicator = $dg_params['dg_sort_asc_indicator'];
 		$this->sort_desc_indicator = $dg_params['dg_sort_desc_indicator'];
 		$this->advanced_sorting_options = $dg_params['dg_advanced_sorting_options'];
-		$this->allow_export_csv = $dg_params['dg_allow_export_csv'];
-		$this->export_csv_options = $dg_params['dg_export_csv_options'];
-		$this->export_csv_encoding_local = $dg_params['dg_export_csv_encoding_local'];
-		$this->export_csv_additional_utf8 = $dg_params['dg_export_csv_additional_utf8'];
-		$this->export_csv_basename = $dg_params['dg_export_csv_basename'];
+		$this->allow_export_excel = $dg_params['dg_allow_export_excel'];
+		$this->export_excel_options = $dg_params['dg_export_excel_options'];
+		$this->export_excel_basename = $dg_params['dg_export_excel_basename'];
 		$this->main_template_path = $dg_params['dg_main_template_path'];
 		$this->criteria_template_path = $dg_params['dg_criteria_template_path'];
 		$this->form_action = $dg_params['dg_form_action'];
 		$this->a_strings = $dg_params['dg_strings'];
 
 		/**
-		 * properties affected from user interface (8)
+		 * properties affected from user interface (7)
 		 */
 		$this->page_num = $this->sanitize_int('page_num', C_PHP_BS_GRID_DEFAULT_PAGE_NUM, null, null);
 		$this->rows_per_page = $this->sanitize_int('rows_per_page', C_PHP_BS_GRID_DEFAULT_ROWS_PER_PAGE, $this->rows_per_page_options, null);
@@ -169,8 +167,7 @@ class php_bs_grid {
 			}
 		}
 
-		$this->export_csv = $this->sanitize_int('export_csv', C_PHP_BS_GRID_EXPORT_CSV_NONE, $this->export_csv_options, null);
-		$this->do_csv_export = (int)$this->export_csv !== C_PHP_BS_GRID_EXPORT_CSV_NONE && $this->allow_export_csv;
+		$this->export_excel = $this->sanitize_int('export_excel', C_PHP_BS_GRID_EXPORT_EXCEL_NO, $this->export_excel_options, null);
 
 	}
 
@@ -203,8 +200,8 @@ class php_bs_grid {
 		return $this->sort_simple_order;
 	}
 
-	public function getExportCSV() {
-		return $this->export_csv;
+	public function getExportExcel() {
+		return $this->export_excel;
 	}
 
 	public function getDbData() {
@@ -261,6 +258,19 @@ class php_bs_grid {
 		return $this->last_error;
 	}
 
+	// get preferences ---------------------------------------------------------
+	public function showColumnsSwitcher() {
+		return $this->show_columns_switcher;
+	}
+
+	public function showAddnewRecord() {
+		return $this->show_addnew_record;
+	}
+
+	public function allowExportExcel() {
+		return $this->allow_export_excel;
+	}
+
 	// setters -----------------------------------------------------------------
 	public function setCriteria($a_criteria) {
 		$this->a_criteria = $a_criteria;
@@ -270,33 +280,11 @@ class php_bs_grid {
 		$this->db_data_formatted = $a_db_data;
 	}
 
-	// options values ----------------------------------------------------------
-	public function showColumnsSwitcher() {
-		return $this->show_columns_switcher;
-	}
-
-	public function showAddnewRecord() {
-		return $this->show_addnew_record;
-	}
-
-	public function allowExportCSV() {
-		return $this->allow_export_csv;
-	}
-
-	public function showAdditionalCsvExportBtnUtf8() {
-		return $this->export_csv_additional_utf8;
-	}
-
-	public function doCSVExport() {
-		return $this->do_csv_export;
-	}
-
-
 	/**
 	 * This applies query criteria (WHERE SQL)
 	 * counts rows returned
 	 * and retrieves current page data (to display)
-	 * or all rows returned (for CSV export)
+	 * or all rows returned (for Excel export)
 	 * @return bool
 	 */
 	public function retrieveDbData() {
@@ -649,85 +637,15 @@ HTML1;
 		return $html1;
 	}
 
-
-	/**
-	 * formats an array as a CSV line
-	 * @param $dataArray
-	 * @param string $delimiter
-	 * @param string $enclosure
-	 * @param string $exportDBCharset
-	 * @param string $exportCSVCharset
-	 * @return bool|string
-	 */
-	private function _array_to_csv_row($dataArray, $delimiter = ';', $enclosure = '"', $exportDBCharset = 'utf-8', $exportCSVCharset = 'utf-8') {
-
-		$string = "";
-
-		// No leading delimiter
-		$writeDelimiter = FALSE;
-		foreach($dataArray as $dataElement) {
-			// convert charset
-			if(strtolower($exportCSVCharset) != strtolower($exportDBCharset)) {
-				$dataElement = iconv($exportDBCharset, $exportCSVCharset . '//TRANSLIT', $dataElement);
-				if($dataElement === false) {
-					$this->last_error = 'Error: Cannot convert ' . $exportDBCharset . ' to ' . $exportCSVCharset;
-					return false;
-				}
-			}
-
-			// Replaces a double quote with two double quotes
-			$dataElement = str_replace("\"", "\"\"", $dataElement);
-
-			// Adds a delimiter before each field (except the first)
-			if($writeDelimiter)
-				$string .= $delimiter;
-
-			// Encloses each field with $enclosure and adds it to the string
-			$string .= $enclosure . $dataElement . $enclosure;
-
-			// Delimiters are used every time except the first.
-			$writeDelimiter = TRUE;
-		} // end foreach($dataArray as $dataElement)
-
-		// Append new line
-		$string .= "\n";
-
-		return $string;
-	}
-
 	/**
 	 * @return bool
 	 */
-	public function exportCSV() {
+	public function exportExcel() {
 
-		// csv header
-		$csv_header = array();
-		foreach($this->a_columns as $column) {
-			if(array_key_exists('is_hidden', $column) && $column['is_hidden'] === true) {
-				continue;
-			}
-			if($this->columns_to_display === C_PHP_BS_GRID_COLUMNS_DEFAULT && $column['display'] === C_PHP_BS_GRID_COLUMNS_MORE) {
-				continue;
-			}
-			array_push($csv_header, $column['header']);
-		}
+		try {
 
-		if($this->export_csv === C_PHP_BS_GRID_EXPORT_CSV_ENCODING_LOCAL) {
-			$csv_line = $this->_array_to_csv_row($csv_header, ';', '"', 'utf-8', $this->export_csv_encoding_local);
-		} else {
-			$csv_line = $this->_array_to_csv_row($csv_header);
-		}
-
-		if($csv_line === false) {
-			return false;
-		} else {
-			$csv = $csv_line;
-		}
-
-		// csv rows
-		foreach($this->db_data_formatted as $row) {
-
-			$csv_row = array();
+			// get columns for excel export and some properties
+			$a_excel_columns = array();
 			foreach($this->a_columns as $key => $column) {
 				if(array_key_exists('is_hidden', $column) && $column['is_hidden'] === true) {
 					continue;
@@ -735,31 +653,58 @@ HTML1;
 				if($this->columns_to_display === C_PHP_BS_GRID_COLUMNS_DEFAULT && $column['display'] === C_PHP_BS_GRID_COLUMNS_MORE) {
 					continue;
 				}
-				array_push($csv_row, $row[$key]);
+				$excel_export_number_as_string = false;
+				if(array_key_exists('excel_export_number_as_string', $column)) {
+					$excel_export_number_as_string = $column['excel_export_number_as_string'];
+				}
+				array_push($a_excel_columns, array(
+					'header' => $column['header'],
+					'column_name' => $key,
+					'excel_export_number_as_string' => $excel_export_number_as_string
+				));
 			}
 
-			if($this->export_csv === C_PHP_BS_GRID_EXPORT_CSV_ENCODING_LOCAL) {
-				$csv_line = $this->_array_to_csv_row($csv_row, ';', '"', 'utf-8', $this->export_csv_encoding_local);
-			} else {
-				$csv_line = $this->_array_to_csv_row($csv_row);
+			$objPHPExcel = $this->php_excel;
+			$objPHPExcel->getActiveSheet()->setTitle($this->export_excel_basename);
+
+			// header
+			$column_index = 0;
+			foreach($a_excel_columns as $excel_column) {
+				$columnLetter = PHPExcel_Cell::stringFromColumnIndex($column_index);
+				$objPHPExcel->getActiveSheet()->setCellValue($columnLetter . '1', $excel_column['header']);
+				$column_index++;
 			}
 
-			if($csv_line === false) {
-				return false;
-			} else {
-				$csv .= $csv_line;
+			// rows
+			$row_index = 2;
+			foreach($this->db_data_formatted as $row) {
+				$column_index = 0;
+				foreach($a_excel_columns as $excel_column) {
+					$columnLetter = PHPExcel_Cell::stringFromColumnIndex($column_index);
+					if($excel_column['excel_export_number_as_string'] === true) {
+						$objPHPExcel->getActiveSheet()->setCellValueExplicit($columnLetter . $row_index, $row[$excel_column['column_name']], PHPExcel_Cell_DataType::TYPE_STRING);
+					} else {
+						$objPHPExcel->getActiveSheet()->setCellValue($columnLetter . $row_index, $row[$excel_column['column_name']]);
+					}
+					$column_index++;
+				}
+				$row_index++;
 			}
 
+			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+			header('Content-Disposition: attachment;filename="' . $this->export_excel_basename . '.xlsx' . '"');
+			header('Cache-Control: max-age=0');
+			$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+			$objWriter->save('php://output');
+
+			return true;
+
+		} catch(Exception $e) {
+			$this->last_error = $e->getMessage();
+			return false;
 		}
 
-		$csv_file_name = ((int)$this->export_csv === C_PHP_BS_GRID_EXPORT_CSV_ENCODING_LOCAL ? $this->export_csv_basename . '.csv' : $this->export_csv_basename . '_utf8.csv');
-		header('Content-Type: text/csv; charset=utf-8');
-		header('Content-Disposition: attachment; filename="' . $csv_file_name . '"');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-		echo $csv;
 
-		return true;
 	}
 
 	public function sanitize_int($param, $default_value, $arr_to_belong, $arr_has_key) {
@@ -966,7 +911,7 @@ HTML1;
 
 	private function _createLimitSQL() {
 		$limitSQL = '';
-		if(!$this->do_csv_export) {
+		if($this->export_excel === C_PHP_BS_GRID_EXPORT_EXCEL_NO) {
 			$ds = $this->db_link;
 			$limitSQL = $ds->limit($this->rows_per_page, ($this->page_num - 1) * $this->rows_per_page);
 		}
