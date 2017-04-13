@@ -382,7 +382,8 @@ if($dg->allowExportExcel()) {
             type="text/javascript"></script>
     <script src="/lib/front_end/php_bs_grid/jquery.php_bs_grid.js"
             type="text/javascript"></script>
-
+    <script src="/path/to/example.js"
+            type="text/javascript"></script>
 </head>
 
 <body>

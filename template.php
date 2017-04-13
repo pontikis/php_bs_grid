@@ -101,9 +101,9 @@
 			<?php if($dg->getTotalRows()) { ?>
 
                 <strong><?php print $dg->getString('total_rows') ?></strong><?php print ': ' . $dg->getTotalRows() . ' ' ?>
-                <strong><?php print $dg->getString('Page') . ' ' ?></strong> <?php print $dg->getPageNum() . ' ' ?>
-				<?php print $dg->getString('from') . ' ' ?><?php print $dg->getTotalPages() . ' (' ?>
-                <strong><?php print $dg->getString('rows') ?></strong><?php print ' ' . $dg->getFirstRowNumInPage() . ' - ' . $dg->getLastRowNumInPage() . ')' ?>
+                <strong><?php print $dg->getString('Page') . ' ' ?></strong> <?php print $dg->getPageNum() ?>
+				<?php print $dg->getString('from') . ' ' ?><?php print $dg->getTotalPages() ?>
+                (<strong><?php print $dg->getString('rows') ?></strong><?php print ' ' . $dg->getFirstRowNumInPage() . ' - ' . $dg->getLastRowNumInPage() ?>)
 
 			<?php } else { ?>
 

@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.0 (10 Apr 2017)
+ * @version 0.9.1 (13 Apr 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
@@ -58,8 +58,20 @@
                     elem_export_excel_btn = $("#" + settings.export_excel_btn_id),
 
                     v_default_page_num = settings.default_page_num,
+                    v_columns_default = settings.columns_default,
+                    v_columns_more = settings.columns_more,
                     v_export_excel_no = settings.export_excel_no,
                     v_export_excel_yes = settings.export_excel_yes,
+
+                    v_criteria_operator_text_ignore = settings.criteria_operator_text_ignore,
+                    v_criteria_operator_text_isnull = settings.criteria_operator_text_isnull,
+
+                    v_criteria_operator_lookup_ignore = settings.criteria_operator_lookup_ignore,
+                    v_criteria_operator_lookup_equal = settings.criteria_operator_lookup_equal,
+
+                    v_criteria_operator_date_ignore = settings.criteria_operator_date_ignore,
+                    v_criteria_operator_date_equal = settings.criteria_operator_date_equal,
+                    v_criteria_operator_date_isnull = settings.criteria_operator_date_isnull,
 
                     criteria = settings.criteria,
                     elem_criteria,
@@ -88,8 +100,14 @@
                                     elem_criteria_operator = $("#" + value.dropdown_id);
                                     elem_criteria = $("#" + value.input_id);
 
-                                    if(parseInt(elem_criteria_operator.val()) === value.operator_ignore) {
+                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_isnull) {
                                         elem_criteria.val("");
+                                        elem_criteria.hide();
+                                    } else {
+                                        elem_criteria.show();
+                                        if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_ignore) {
+                                            elem_criteria.val("");
+                                        }
                                     }
                                 }
 
@@ -104,7 +122,7 @@
                                     elem_criteria_operator = $("#" + value.dropdown_id);
                                     elem_criteria = $("#" + value.dropdown_lookup_id);
 
-                                    if(parseInt(elem_criteria_operator.val()) === value.operator_equal) {
+                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_lookup_equal) {
                                         elem_criteria.show();
                                     } else {
                                         elem_criteria.hide();
@@ -128,19 +146,32 @@
                                         elem_criteria_assoc = $("#" + assoc.input_id);
 
                                     var criteria_date_operator = parseInt(elem_criteria_operator.val());
-                                    if(criteria_date_operator === value.operator_ignore) {
-                                        elem_criteria.val("");
-                                    }
-                                    if(criteria_date_operator === value.operator_equal) {
+
+                                    if(criteria_date_operator === v_criteria_operator_date_equal ||
+                                        criteria_date_operator === v_criteria_operator_date_isnull) {
+
                                         elem_criteria_label_assoc.hide();
-                                        elem_criteria_operator_assoc.val(value.operator_ignore);
+                                        elem_criteria_operator_assoc.val(v_criteria_operator_date_ignore);
                                         elem_criteria_operator_assoc.hide();
                                         elem_criteria_assoc.val("");
                                         elem_criteria_assoc.hide();
+
+                                        if(criteria_date_operator === v_criteria_operator_date_isnull) {
+                                            elem_criteria.val("");
+                                            elem_criteria.hide();
+                                        }
+
                                     } else {
+
                                         elem_criteria_label_assoc.show();
                                         elem_criteria_operator_assoc.show();
                                         elem_criteria_assoc.show();
+
+                                        elem_criteria.show();
+
+                                        if(criteria_date_operator === v_criteria_operator_date_ignore) {
+                                            elem_criteria.val("");
+                                        }
                                     }
 
                                 }
@@ -154,7 +185,7 @@
                                 if(value.criteria_type === "date_end") {
                                     elem_criteria_operator = $("#" + value.dropdown_id);
                                     elem_criteria = $("#" + value.input_id);
-                                    if(parseInt(elem_criteria_operator.val()) === value.operator_ignore) {
+                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_date_ignore) {
                                         elem_criteria.val("");
                                     }
                                 }
@@ -212,10 +243,10 @@
 
                 /* columns to display --------------------------------------- */
                 elem_columns_switcher.click(function() {
-                    if(parseInt(elem_columns_to_display.val()) === settings.columns_default) {
-                        elem_columns_to_display.val(settings.columns_more)
+                    if(parseInt(elem_columns_to_display.val()) === v_columns_default) {
+                        elem_columns_to_display.val(v_columns_more)
                     } else {
-                        elem_columns_to_display.val(settings.columns_default)
+                        elem_columns_to_display.val(v_columns_default)
                     }
                     doSubmit("columns_switcher");
                 });
@@ -347,23 +378,23 @@
                             var elem_criteria_operator = $("#" + value.dropdown_id),
                                 elem_criteria = $("#" + value.input_id);
                             elem_criteria.val("");
-                            elem_criteria_operator.val(value.operator_ignore);
+                            elem_criteria_operator.val(v_criteria_operator_text_ignore);
                         }
                         if(value.criteria_type === "lookup") {
                             elem_criteria_operator = $("#" + value.dropdown_id);
-                            elem_criteria_operator.val(value.operator_ignore);
+                            elem_criteria_operator.val(v_criteria_operator_lookup_ignore);
                         }
                         if(value.criteria_type === "date_start") {
                             elem_criteria_operator = $("#" + value.dropdown_id);
                             elem_criteria = $("#" + value.input_id);
                             elem_criteria.val("");
-                            elem_criteria_operator.val(value.operator_ignore);
+                            elem_criteria_operator.val(v_criteria_operator_date_ignore);
                         }
                         if(value.criteria_type === "date_end") {
                             elem_criteria_operator = $("#" + value.dropdown_id);
                             elem_criteria = $("#" + value.input_id);
                             elem_criteria.val("");
-                            elem_criteria_operator.val(value.operator_ignore);
+                            elem_criteria_operator.val(v_criteria_operator_date_ignore);
                         }
                     });
                     arrange_criteria("text");
@@ -395,21 +426,26 @@
                             var elem_criteria_operator = $("#" + value.dropdown_id),
                                 elem_criteria = $("#" + value.input_id);
 
-                            if(elem_criteria.val()) {
-                                text_inputs_contain_value = true;
-                            }
-                            ajax_data_to_pass[value.input_id] = elem_criteria.val();
+                            if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_isnull) {
 
-                            if(parseInt(elem_criteria_operator.val()) === value.operator_ignore && elem_criteria.val()) {
-                                no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
-                                return false;
+                                if(elem_criteria.val()) {
+                                    text_inputs_contain_value = true;
+                                }
+                                ajax_data_to_pass[value.input_id] = elem_criteria.val();
+
+                                if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_ignore && elem_criteria.val()) {
+                                    no_errors = false;
+                                    show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
+                                    return false;
+                                }
+                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_ignore && !elem_criteria.val()) {
+                                    no_errors = false;
+                                    show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
+                                    return false;
+                                }
+
                             }
-                            if(parseInt(elem_criteria_operator.val()) !== value.operator_ignore && !elem_criteria.val()) {
-                                no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
-                                return false;
-                            }
+
                         }
 
                         if(value.criteria_type === "date_start") {
@@ -417,23 +453,28 @@
                             elem_criteria_operator = $("#" + value.dropdown_id);
                             elem_criteria = $("#" + value.input_id);
 
-                            if(elem_criteria.val()) {
-                                text_inputs_contain_value = true;
+                            if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_isnull) {
+
+                                if(elem_criteria.val()) {
+                                    text_inputs_contain_value = true;
+                                }
+
+                                ajax_data_to_pass[value.dropdown_id] = elem_criteria_operator.val();
+                                ajax_data_to_pass[value.input_id] = elem_criteria.val();
+
+                                if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_date_ignore && elem_criteria.val()) {
+                                    no_errors = false;
+                                    show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
+                                    return false;
+                                }
+                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_ignore && !elem_criteria.val()) {
+                                    no_errors = false;
+                                    show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
+                                    return false;
+                                }
+
                             }
 
-                            ajax_data_to_pass[value.dropdown_id] = elem_criteria_operator.val();
-                            ajax_data_to_pass[value.input_id] = elem_criteria.val();
-
-                            if(parseInt(elem_criteria_operator.val()) === value.operator_ignore && elem_criteria.val()) {
-                                no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
-                                return false;
-                            }
-                            if(parseInt(elem_criteria_operator.val()) !== value.operator_ignore && !elem_criteria.val()) {
-                                no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
-                                return false;
-                            }
                         }
 
                         if(value.criteria_type === "date_end") {
@@ -448,12 +489,12 @@
                             ajax_data_to_pass[value.dropdown_id] = elem_criteria_operator.val();
                             ajax_data_to_pass[value.input_id] = elem_criteria.val();
 
-                            if(parseInt(elem_criteria_operator.val()) === value.operator_ignore && elem_criteria.val()) {
+                            if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_date_ignore && elem_criteria.val()) {
                                 no_errors = false;
                                 show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
                                 return false;
                             }
-                            if(parseInt(elem_criteria_operator.val()) !== value.operator_ignore && !elem_criteria.val()) {
+                            if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_ignore && !elem_criteria.val()) {
                                 no_errors = false;
                                 show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
                                 return false;
@@ -576,13 +617,7 @@
                 criteria_reset_id: "criteria_reset",
 
                 export_excel_id: "export_excel",  // hidden
-                export_excel_btn_id: "export_excel_btn",
-
-                default_page_num: 1,
-                columns_default: 1,
-                columns_more: 2,
-                export_excel_no: 1,
-                export_excel_yes: 2
+                export_excel_btn_id: "export_excel_btn"
             };
         }
     };

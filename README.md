@@ -33,6 +33,6 @@ Displays database data in table format.
 
 ## How to use
 
-See example.php
+See example.php, example.js
 
 Documentation coming soon

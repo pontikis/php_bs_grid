@@ -10,6 +10,13 @@ Project page https://github.com/pontikis/php_bs_grid
 License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 
 
+Release 0.9.1 (13 Apr 2017)
+--------------------------
+
+* bugs using [is_null] operators (fixed) #5
+* minified js version added
+
+
 Release 0.9.0 (10 Apr 2017)
 --------------------------
 
