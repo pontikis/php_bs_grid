@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.1 (13 Apr 2017)
+ * @version 0.9.2 (14 Apr 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
@@ -232,6 +232,7 @@
                 elem_page_num.keypress(function(e) {
                     // if the key pressed is the enter key
                     if(e.which === 13) {
+                        e.preventDefault();
                         elem_go_to_page.click();
                     }
                 });
@@ -292,6 +293,7 @@
                         elem_criteria.keypress(function(e) {
                             // if the key pressed is the enter key
                             if(e.which === 13) {
+                                e.preventDefault();
                                 elem_criteria_apply.click();
                             }
                         });
@@ -332,6 +334,7 @@
                         elem_criteria.keypress(function(e) {
                             // if the key pressed is the enter key
                             if(e.which === 13) {
+                                e.preventDefault();
                                 elem_criteria_apply.click();
                             }
                         });
@@ -358,6 +361,7 @@
                         elem_criteria.keypress(function(e) {
                             // if the key pressed is the enter key
                             if(e.which === 13) {
+                                e.preventDefault();
                                 elem_criteria_apply.click();
                             }
                         });
