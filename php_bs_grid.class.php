@@ -9,7 +9,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.1 (13 Apr 2017)
+ * @version    0.9.2 (14 Apr 2017)
  *
  */
 class php_bs_grid {
@@ -92,7 +92,7 @@ class php_bs_grid {
 	/**
 	 * php_bs_grid constructor.
 	 * @param dacapo $db_link
-	 * @param PHPExcel $phpexel
+	 * @param PHPExcel $php_excel
 	 * @param array $dg_params
 	 */
 	public function __construct(dacapo $db_link, PHPExcel $php_excel, array $dg_params) {

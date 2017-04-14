@@ -1,12 +1,31 @@
-<?php if($dg->showColumnsSwitcher() || $dg->showAddnewRecord()) { ?>
+<form id="php_bs_grid_form"
+      action="<?php print $dg->getFormAction() ?>"
+      method="post">
 
     <div class="row"
          style="margin-top: 15px; margin-bottom: 5px;">
 
+        <!--  Rows per page  -->
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"
+             style="margin-bottom: 10px;">
+
+            <div class="form-group form-inline"
+                 style="margin-bottom: 0">
+                <label for="rows-per-page"><?php print $dg->getString('rows_per_page') ?></label>
+                <select id="rows_per_page"
+                        name="rows_per_page"
+                        class="form-control"
+                        style="max-width: 100px;">
+					<?php $dg->displayRowsPerPage() ?>
+                </select>
+            </div>
+
+        </div>
+
         <!--  Column switcher  -->
 		<?php if($dg->getTotalRows() > 0) { ?>
 
-            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6"
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"
                  style="margin-bottom: 10px;">
 
 				<?php if($dg->showColumnsSwitcher()) { ?>
@@ -52,43 +71,37 @@
 
     </div>
 
-<?php } ?>
+    <!--  Datagrid  -->
+	<?php if($dg->getTotalRows() > 0) { ?>
 
-<!--  Datagrid  -->
-<?php if($dg->getTotalRows() > 0) { ?>
+        <div class="table-responsive">
 
-    <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
 
-        <table class="table table-bordered table-hover">
-            <thead>
+                <tr>
 
-            <tr>
+                    <th>
+                        #
+                    </th>
 
-                <th>
-                    #
-                </th>
+					<?php $dg->displayTableHeaders() ?>
 
-				<?php $dg->displayTableHeaders() ?>
+                </tr>
 
-            </tr>
+                </thead>
 
-            </thead>
+                <tbody>
 
-            <tbody>
+				<?php $dg->displayTableData() ?>
 
-			<?php $dg->displayTableData() ?>
+                </tbody>
 
-            </tbody>
+            </table>
 
-        </table>
+        </div>
 
-    </div>
-
-<?php } ?>
-
-<form id="php_bs_grid_form"
-      action="<?php print $dg->getFormAction() ?>"
-      method="post">
+	<?php } ?>
 
     <div class="row alert alert-info"
          style="margin-left: auto; margin-right: auto; padding: 5px;"
@@ -161,7 +174,7 @@
         <div class="row"
              style="margin-top: 15px; margin-bottom: 5px;">
 
-            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
+            <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8"
                  style="margin-bottom: 10px;">
 
                 <nav>
@@ -204,37 +217,22 @@
             </div>
 
             <!--  Go to page  -->
-            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"
                  style="margin-bottom: 10px;">
 
                 <div class="input-group">
                         <span class="input-group-btn">
                             <button type="button"
-                                    class="btn btn-default"
-                                    id="go_to_page"><?php print $dg->getString('go_to_page') ?></button>
+                                    id="go_to_page"
+                                    class="btn btn-default"><?php print $dg->getString('go_to_page') ?></button>
                         </span>
 
                     <input type="text"
-                           class="form-control"
                            id="page_num"
                            name="page_num"
+                           class="form-control"
+                           style="width: 100px;"
                            value="<?php print $dg->getPageNum() ?>">
-                </div>
-
-            </div>
-
-            <!--  Rows per page  -->
-            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"
-                 style="margin-bottom: 10px;">
-
-                <div class="form-group form-inline"
-                     style="margin-bottom: 0">
-                    <label for="rows-per-page"><?php print $dg->getString('rows_per_page') ?></label>
-                    <select id="rows_per_page"
-                            name="rows_per_page"
-                            class="form-control">
-						<?php $dg->displayRowsPerPage() ?>
-                    </select>
                 </div>
 
             </div>
