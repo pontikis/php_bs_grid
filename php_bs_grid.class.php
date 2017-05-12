@@ -9,7 +9,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.2 (14 Apr 2017)
+ * @version    0.9.3 (???????)
  *
  */
 class php_bs_grid {
@@ -384,7 +384,7 @@ class php_bs_grid {
 
 				$class = '';
 				if(array_key_exists('td_class', $column) && $column['td_class']) {
-					$class = ' class="' . $column['th_class'] . '"';
+					$class = ' class="' . $column['td_class'] . '"';
 				}
 
 				$a_tmp_cell = array(

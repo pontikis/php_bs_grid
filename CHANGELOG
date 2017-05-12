@@ -10,6 +10,12 @@ Project page https://github.com/pontikis/php_bs_grid
 License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 
 
+Release 0.9.3 (??????)
+--------------------------
+
+* fix typo (th_class instead of td_class) in displayTableData
+
+
 Release 0.9.2 (14 Apr 2017)
 --------------------------
 
