@@ -33,7 +33,9 @@ $(function() {
                 dropdown_id: "criteria_operator_lastname",
                 input_id: "criteria_lastname",
                 msg_missing_operator: data["missing_criteria_operator_lastname"],
-                msg_missing_value: data["missing_criteria_lastname"]
+                msg_missing_value: data["missing_criteria_lastname"],
+                minchars: 3,
+                msg_minchars: data["minchars_lastname"]
             },
             {
                 criteria_name: "firstname",

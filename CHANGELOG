@@ -10,9 +10,11 @@ Project page https://github.com/pontikis/php_bs_grid
 License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 
 
-Release 0.9.3 (??????)
+Release 0.9.3 (15 May 2017)
 --------------------------
 
+* trim filter values #10
+* filter min chars (after trim) #9
 * fix typo (th_class instead of td_class) in displayTableData #8
 
 
