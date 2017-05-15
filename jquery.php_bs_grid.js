@@ -1,10 +1,9 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.2 (14 Apr 2017)
+ * @version 0.9.3 (15/05/2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
- * @requires jquery (tested with 3.1.1), twitter bootstrap (tested with 3.3.7), jQuery UI datepicker (tested with 1.12.1)
  */
 "use strict";
 (function($) {
@@ -432,6 +431,8 @@
 
                             if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_isnull) {
 
+                                elem_criteria.val($.trim(elem_criteria.val()));
+
                                 if(elem_criteria.val()) {
                                     text_inputs_contain_value = true;
                                 }
@@ -447,6 +448,15 @@
                                     show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
                                     return false;
                                 }
+                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_ignore && elem_criteria.val()) {
+                                    if(value.hasOwnProperty("minchars") && value.minchars) {
+                                        if(elem_criteria.val().length < value.minchars) {
+                                            no_errors = false;
+                                            show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_minchars, value.input_id);
+                                            return false;
+                                        }
+                                    }
+                                }
 
                             }
 
@@ -458,6 +468,8 @@
                             elem_criteria = $("#" + value.input_id);
 
                             if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_isnull) {
+
+                                elem_criteria.val($.trim(elem_criteria.val()));
 
                                 if(elem_criteria.val()) {
                                     text_inputs_contain_value = true;
@@ -485,6 +497,8 @@
 
                             elem_criteria_operator = $("#" + value.dropdown_id);
                             elem_criteria = $("#" + value.input_id);
+
+                            elem_criteria.val($.trim(elem_criteria.val()));
 
                             if(elem_criteria.val()) {
                                 text_inputs_contain_value = true;
