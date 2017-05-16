@@ -22,6 +22,8 @@ class php_bs_grid {
 	private $a_columns;
 	private $select_count_column;
 	private $select_from_sql;
+	private $a_fixed_where = array();
+	private $a_fixed_bind_params = array();
 	private $show_columns_switcher;
 	private $show_addnew_record;
 	private $rows_per_page_options;
@@ -104,6 +106,12 @@ class php_bs_grid {
 		$this->a_columns = $dg_params['dg_columns'];
 		$this->select_count_column = $dg_params['dg_select_count_column'];
 		$this->select_from_sql = $dg_params['dg_select_from_sql'];
+		if(array_key_exists('dg_fixed_where', $dg_params)) {
+			$this->a_fixed_where = $dg_params['dg_fixed_where'];
+		}
+		if(array_key_exists('dg_fixed_bind_params', $dg_params)) {
+			$this->a_fixed_bind_params = $dg_params['dg_fixed_bind_params'];
+		}
 		$this->show_columns_switcher = $dg_params['dg_show_columns_switcher'];
 		$this->show_addnew_record = $dg_params['dg_show_addnew_record'];
 		$this->rows_per_page_options = $dg_params['dg_rows_per_page_options'];
@@ -794,8 +802,8 @@ HTML1;
 	private function _createWhereSQL() {
 
 		$whereSQL = '';
-		$a_whereSQL = array();
-		$bind_params = array();
+		$a_whereSQL = $this->a_fixed_where;
+		$bind_params = $this->a_fixed_bind_params;
 
 		foreach($this->a_criteria as $criterion) {
 
@@ -871,19 +879,21 @@ HTML1;
 			}
 		}
 
-		$filters_applied = count($a_whereSQL);
-		if($filters_applied) {
+		$filters_all = count($a_whereSQL);
+		$filters_fixed = count($this->a_fixed_where);
+
+		if($filters_all) {
 			$whereSQL = 'WHERE ';
 		}
 		foreach($a_whereSQL as $key => $filter) {
 			$whereSQL .= $filter;
-			if($key < $filters_applied - 1)
+			if($key < $filters_all - 1)
 				$whereSQL .= ' AND ';
 		}
 
 		$this->where_sql = $whereSQL;
 		$this->bind_params = $bind_params;
-		$this->filters_applied = $filters_applied;
+		$this->filters_applied = $filters_all - $filters_fixed;
 
 	}
 
