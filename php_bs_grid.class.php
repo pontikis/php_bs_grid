@@ -9,7 +9,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.3 (15/05/2017)
+ * @version    0.9.4 (??/05/2017)
  *
  */
 class php_bs_grid {
@@ -154,7 +154,11 @@ class php_bs_grid {
 						$column['sort_simple_default'] === true
 					) {
 						$this->sort_simple_field = $key;
-						$this->sort_simple_order = 'ASC';
+						if(array_key_exists('sort_simple_default_order', $column)) {
+							$this->sort_simple_order = $column['sort_simple_default_order'];
+						} else {
+							$this->sort_simple_order = 'ASC';
+						}
 						break;
 					}
 				}
