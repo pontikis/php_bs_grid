@@ -195,6 +195,40 @@
 
                 };
 
+                var clear_criterion = function(criterion_name) {
+
+                    var criterion = getCriterionByName(criterion_name);
+
+                    if(criterion.criteria_type === "text") {
+                        var elem_criteria_operator = $("#" + criterion.dropdown_id),
+                            elem_criteria = $("#" + criterion.input_id);
+                        elem_criteria.val("");
+                        elem_criteria_operator.val(v_criteria_operator_text_ignore);
+                    }
+                    if(criterion.criteria_type === "lookup") {
+                        elem_criteria_operator = $("#" + criterion.dropdown_id);
+                        elem_criteria_operator.val(v_criteria_operator_lookup_ignore);
+                    }
+                    if(criterion.criteria_type === "date_start") {
+                        elem_criteria_operator = $("#" + criterion.dropdown_id);
+                        elem_criteria = $("#" + criterion.input_id);
+                        elem_criteria.val("");
+                        elem_criteria_operator.val(v_criteria_operator_date_ignore);
+                    }
+                    if(criterion.criteria_type === "date_end") {
+                        elem_criteria_operator = $("#" + criterion.dropdown_id);
+                        elem_criteria = $("#" + criterion.input_id);
+                        elem_criteria.val("");
+                        elem_criteria_operator.val(v_criteria_operator_date_ignore);
+                    }
+                    if(criterion.criteria_type === "autocomplete") {
+                        var elem_criteria_filter = $("#" + criterion.filter_id),
+                            elem_criteria_autocomplete = $("#" + criterion.autocomplete_id);
+                        elem_criteria_filter.val("");
+                        elem_criteria_autocomplete.val("");
+                    }
+                };
+
 
                 /* initialize criteria -------------------------------------- */
                 arrange_criteria("text");
@@ -373,6 +407,28 @@
                             }
                         });
                     }
+                    if(value.criteria_type === "autocomplete") {
+                        var elem_criteria_filter = $("#" + value.filter_id),
+                            elem_criteria_autocomplete = $("#" + value.autocomplete_id),
+                            autocomplete_params = value.autocomplete_params;
+
+                        autocomplete_params.select = function(event, ui) {
+                            elem_criteria_filter.val(ui.item.id);
+                            disableExport();
+                        };
+                        elem_criteria_autocomplete.autocomplete(autocomplete_params);
+
+                        // force select from list
+                        elem_criteria_autocomplete.on('input', function() {
+                            elem_criteria_filter.val('');
+                            disableExport();
+                        });
+
+                        // set list width
+                        elem_criteria_autocomplete.on('open', function() {
+                            $(".ui-autocomplete").css("width", elem_criteria_autocomplete.css("width"));
+                        });
+                    }
                 });
 
 
@@ -385,28 +441,7 @@
                 elem_criteria_reset.click(function() {
                     elem_page_num.val(settings.default_page_num);
                     $.each(criteria, function(key, value) {
-                        if(value.criteria_type === "text") {
-                            var elem_criteria_operator = $("#" + value.dropdown_id),
-                                elem_criteria = $("#" + value.input_id);
-                            elem_criteria.val("");
-                            elem_criteria_operator.val(v_criteria_operator_text_ignore);
-                        }
-                        if(value.criteria_type === "lookup") {
-                            elem_criteria_operator = $("#" + value.dropdown_id);
-                            elem_criteria_operator.val(v_criteria_operator_lookup_ignore);
-                        }
-                        if(value.criteria_type === "date_start") {
-                            elem_criteria_operator = $("#" + value.dropdown_id);
-                            elem_criteria = $("#" + value.input_id);
-                            elem_criteria.val("");
-                            elem_criteria_operator.val(v_criteria_operator_date_ignore);
-                        }
-                        if(value.criteria_type === "date_end") {
-                            elem_criteria_operator = $("#" + value.dropdown_id);
-                            elem_criteria = $("#" + value.input_id);
-                            elem_criteria.val("");
-                            elem_criteria_operator.val(v_criteria_operator_date_ignore);
-                        }
+                        clear_criterion(value.criteria_name);
                     });
                     arrange_criteria("text");
                     arrange_criteria("lookup");

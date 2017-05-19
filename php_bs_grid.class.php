@@ -650,6 +650,87 @@ HTML1;
 	}
 
 	/**
+	 * @param $criterion
+	 * @return string
+	 */
+	public function displayCriteriaAutocomplete($criterion) {
+
+		$params = $this->a_criteria[$criterion]['params_html'];
+
+		// get data from params array
+		$wrapper_id = $params['wrapper_id'];
+		$wrapper_class = $params['wrapper_class'];
+
+		$autocomplete_wrapper_class = $params['autocomplete_wrapper_class'];
+		$autocomplete_group_wrapper_class = $params['autocomplete_group_wrapper_class'];
+		$autocomplete_label_id = $params['autocomplete_label_id'];
+		$autocomplete_label_class = $params['autocomplete_label_class'];
+		$autocomplete_label = $params['autocomplete_label'];
+		$autocomplete_id = $params['autocomplete_id'];
+		$autocomplete_name = $params['autocomplete_name'];
+		$autocomplete_class = $params['autocomplete_class'];
+		$autocomplete_style = $params['autocomplete_style'];
+		$autocomplete_value = htmlspecialchars($params['autocomplete_value']);
+
+		$filter_wrapper_class = $params['filter_wrapper_class'];
+		$filter_group_wrapper_class = $params['filter_group_wrapper_class'];
+		$filter_label_id = $params['filter_label_id'];
+		$filter_label_class = $params['filter_label_class'];
+		$filter_label = $params['filter_label'];
+		$filter_id = $params['filter_id'];
+		$filter_name = $params['filter_name'];
+		$filter_class = $params['filter_class'];
+		$filter_style = $params['filter_style'];
+		$filter_value = htmlspecialchars($params['filter_value']);
+
+		// some transformations
+		$wrapper_class_html = !$wrapper_class ? '' : ' class="' . $wrapper_class . '"';
+		$autocomplete_label_id_html = !$autocomplete_label_id ? '' : ' id="' . $autocomplete_label_id . '"';
+		$autocomplete_label_class_html = !$autocomplete_label_class ? '' : ' class="' . $autocomplete_label_class . '"';
+		$autocomplete_style_html = !$autocomplete_style ? '' : ' style="' . $autocomplete_style . '"';
+		$filter_label_id_html = !$filter_label_id ? '' : ' id="' . $filter_label_id . '"';
+		$filter_label_class_html = !$filter_label_class ? '' : ' class="' . $filter_label_class . '"';
+		$filter_style_html = !$filter_style ? '' : ' style="' . $filter_style . '"';
+
+		$html1 = <<<HTML1
+<div id="{$wrapper_id}{$wrapper_class_html}">
+
+	<div class="{$autocomplete_wrapper_class}">
+	
+		<div class="{$autocomplete_group_wrapper_class}">
+			<label{$autocomplete_label_id_html}{$autocomplete_label_class_html} for="{$autocomplete_id}">{$autocomplete_label}</label>
+			<input type="text"
+				   id="{$autocomplete_id}"
+				   name="{$autocomplete_name}"
+				   class="{$autocomplete_class}"
+				   {$autocomplete_style_html}
+				   value="{$autocomplete_value}">
+		</div>
+	
+	</div>
+	
+	<div class="{$filter_wrapper_class}">
+	
+		<div class="{$filter_group_wrapper_class}">
+			<label{$filter_label_id_html}{$filter_label_class_html} for="{$filter_id}">{$filter_label}</label>
+			<input type="text"
+				   id="{$filter_id}"
+				   name="{$filter_name}"
+				   class="{$filter_class}"
+				   {$filter_style_html}
+				   value="{$filter_value}"
+				   readonly="readonly">
+		</div>
+		
+	</div>
+	
+</div>
+HTML1;
+
+		return $html1;
+	}
+
+	/**
 	 * @return bool
 	 */
 	public function exportExcel() {
@@ -842,6 +923,13 @@ HTML1;
 						case C_PHP_BS_GRID_CRITERIA_LOOKUP_IS_NULL:
 							array_push($a_whereSQL, $criterion['sql_column'] . ' IS NULL');
 							break;
+					}
+					break;
+
+				case 'autocomplete':
+					if($criterion['column_value']) {
+						array_push($a_whereSQL, $criterion['sql_column'] . ' = ?');
+						array_push($bind_params, $criterion['column_value']);
 					}
 					break;
 
