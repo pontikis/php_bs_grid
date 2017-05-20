@@ -730,6 +730,68 @@ HTML1;
 		return $html1;
 	}
 
+
+	public function displayCriteriaMultiselectCheckbox($criterion) {
+
+		$params = $this->a_criteria[$criterion]['params_html'];
+		$items_html = '';
+
+		// get data from params array
+		$wrapper_id = $params['wrapper_id'];
+		$wrapper_class = $params['wrapper_class'];
+
+		$fieldset_id = $params['fieldset_id'];
+		$fieldset_class = $params['fieldset_class'];
+
+		$legend = $params['legend'];
+		$legend_id = $params['legend_id'];
+		$legend_class = $params['legend_class'];
+		$legend_style = $params['legend_style'];
+
+		$orientation = $params['orientation'];
+		$group_name = $params['group_name'];
+		$group_value = $params['group_value'];
+		$items = $params['items'];
+
+		// some transformations
+		$wrapper_class_html = !$wrapper_class ? '' : ' class="' . $wrapper_class . '"';
+
+		$fieldset_id_html = !$fieldset_id ? '' : ' id="' . $fieldset_id . '"';
+		$fieldset_class_html = !$fieldset_class ? '' : ' class="' . $fieldset_class . '"';
+
+		$legend_id_html = !$legend_id ? '' : ' id="' . $legend_id . '"';
+		$legend_class_html = !$legend_class ? '' : ' class="' . $legend_class . '"';
+		$legend_style_html = !$legend_style ? '' : ' style="' . $legend_style . '"';
+
+		foreach($items as $item) {
+			$checked = (in_array($item['input_value'], $group_value) ? ' checked' : '');
+			if($orientation === 'horizontal') {
+				$items_html .= "<label class=\"{$item['label_class']}\">" . PHP_EOL;
+				$items_html .= "<input type=\"checkbox\" id=\"{$item['input_id']}\" name=\"{$group_name}\" value=\"{$item['input_value']}\"{$checked}> {$item['label']}" . PHP_EOL;
+				$items_html .= "</label>" . PHP_EOL . PHP_EOL;
+			} elseif($orientation === 'vertical') {
+				$items_html .= "<div class=\"{$item['group_class']}\">" . PHP_EOL;
+				$items_html .= "<label>" . PHP_EOL;
+				$items_html .= "<input type=\"checkbox\" id=\"{$item['input_id']}\" name=\"{$group_name}\" value=\"{$item['input_value']}\"{$checked}>" . PHP_EOL;
+				$items_html .= "{$item['label']}" . PHP_EOL;
+				$items_html .= "</label>" . PHP_EOL;
+				$items_html .= "</div>" . PHP_EOL . PHP_EOL;
+			}
+		}
+
+		$html1 = <<<HTML1
+<div id="{$wrapper_id}"{$wrapper_class_html}>
+<fieldset{$fieldset_id_html}{$fieldset_class_html}>
+    <legend{$legend_id_html}{$legend_class_html}{$legend_style_html}>{$legend}</legend>
+	{$items_html}
+</fieldset>
+</div>
+HTML1;
+
+		return $html1;
+
+	}
+
 	/**
 	 * @return bool
 	 */
@@ -962,6 +1024,27 @@ HTML1;
 						case C_PHP_BS_GRID_CRITERIA_DATE_IS_NULL:
 							array_push($a_whereSQL, $criterion['sql_column'] . ' IS NULL');
 							break;
+					}
+					break;
+
+				case 'multiselect_checkbox':
+					if($criterion['column_value'] && $criterion['column_value'] != $criterion['value_to_ignore']) {
+						$count_params = count($criterion['column_value']);
+						if($count_params === 1) {
+							array_push($a_whereSQL, $criterion['sql_column'] . ' = ?');
+							array_push($bind_params, $criterion['column_value'][0]);
+						} else {
+							$IN_SQL = '(';
+							foreach($criterion['column_value'] as $key => $item) {
+								$IN_SQL .= '?';
+								if($key < $count_params - 1) {
+									$IN_SQL .= ',';
+								}
+								array_push($bind_params, $criterion['column_value'][$key]);
+							}
+							$IN_SQL .= ')';
+							array_push($a_whereSQL, $criterion['sql_column'] . ' IN ' . $IN_SQL);
+						}
 					}
 					break;
 			}

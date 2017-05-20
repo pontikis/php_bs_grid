@@ -227,6 +227,11 @@
                         elem_criteria_filter.val("");
                         elem_criteria_autocomplete.val("");
                     }
+                    if(criterion.criteria_type === "multiselect_checkbox") {
+                        $.each(criterion.items, function(i, item) {
+                            $('#' + item.id).prop('checked', item.default_checked_status);
+                        });
+                    }
                 };
 
 
@@ -560,6 +565,22 @@
                                 show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
                                 return false;
                             }
+                        }
+
+                        if(value.criteria_type === "multiselect_checkbox") {
+
+                            var count_checked = 0;
+                            $.each(value.items, function(i, item) {
+                                if($('#' + item.id).prop('checked') === true) {
+                                    count_checked = count_checked + 1;
+                                }
+                            });
+                            if(count_checked === 0) {
+                                no_errors = false;
+                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_all_deselected, value.items[0].id);
+                                return false;
+                            }
+
                         }
 
                     });

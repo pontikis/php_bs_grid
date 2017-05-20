@@ -13,6 +13,7 @@ License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 Release 0.9.4 (?? May 2017)
 --------------------------
 
+* Implement multiselect_checkbox criteria #11
 * Implement autocomplete criteria #14
 * Implement datetime criteria #15
 * Fixed WHERE statements (beyond filters applied by the user interface) #13
