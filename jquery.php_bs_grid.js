@@ -1,9 +1,26 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.4 (17 Jun 2017)
+ * @version 0.9.4 (18 Jun 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
+ */
+
+/**
+ * See <a href="http://jquery.com">http://jquery.com</a>.
+ * @name $
+ * @class
+ * See the jQuery Library  (<a href="http://jquery.com">http://jquery.com</a>) for full details.  This just
+ * documents the function and classes that are added to jQuery by this plug-in.
+ */
+
+/**
+ * See <a href="http://jquery.com">http://jquery.com</a>
+ * @name fn
+ * @class
+ * See the jQuery Library  (<a href="http://jquery.com">http://jquery.com</a>) for full details.  This just
+ * documents the function and classes that are added to jQuery by this plug-in.
+ * @memberOf $
  */
 "use strict";
 (function($) {
@@ -12,7 +29,9 @@
 
     /* public methods ------------------------------------------------------- */
     var methods = {
-
+        /**
+         * @lends $.fn.php_bs_grid
+         */
         init: function(options) {
 
             var elem = this;
