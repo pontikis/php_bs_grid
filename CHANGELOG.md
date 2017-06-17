@@ -1,4 +1,4 @@
-php_bs_grid
+CHANGELOG
 ===========
 
 php datagrid with jquery, bootstrap frontend
