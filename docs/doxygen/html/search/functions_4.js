@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['getadvancedsortingoptions',['getAdvancedSortingOptions',['../classphp__bs__grid.html#aa34027c11f16cf665b3e76297a6363c7',1,'php_bs_grid']]],
+  ['getcolumnstodisplay',['getColumnsToDisplay',['../classphp__bs__grid.html#a1782a16c29df8036c7ab9aaff757b538',1,'php_bs_grid']]],
+  ['getcolumnstodisplayicon',['getColumnsToDisplayIcon',['../classphp__bs__grid.html#aacb7c86b5968b68e219f430463ec6a5c',1,'php_bs_grid']]],
+  ['getcolumnstodisplaytext',['getColumnsToDisplayText',['../classphp__bs__grid.html#a72b17384d25802891cbc1b4b412aeeab',1,'php_bs_grid']]],
+  ['getcriteriatemplatepath',['getCriteriaTemplatePath',['../classphp__bs__grid.html#ab6f385be1d389b95345107c000d7f43b',1,'php_bs_grid']]],
+  ['getdbdata',['getDbData',['../classphp__bs__grid.html#a2681f38fe06b57e014bff47c8f3a9dae',1,'php_bs_grid']]],
+  ['geterror',['getError',['../classphp__bs__grid.html#a24ada5decce3d1b79cd82f5a90ccf404',1,'php_bs_grid']]],
+  ['getexportexcel',['getExportExcel',['../classphp__bs__grid.html#a391cdb61d24198bfffa6658bd8886246',1,'php_bs_grid']]],
+  ['getfiltersappliedcount',['getFiltersAppliedCount',['../classphp__bs__grid.html#a74aa15902231d3dc07dcb9f8aae71ea9',1,'php_bs_grid']]],
+  ['getfirstrownuminpage',['getFirstRowNumInPage',['../classphp__bs__grid.html#a3b32877110a88067d0f3e078951f89fb',1,'php_bs_grid']]],
+  ['getformaction',['getFormAction',['../classphp__bs__grid.html#a689844fc143fdc30133e4f8626352cb2',1,'php_bs_grid']]],
+  ['getgridtemplatepath',['getGridTemplatePath',['../classphp__bs__grid.html#a7f1921894674e5e89ef1fa6e6854391a',1,'php_bs_grid']]],
+  ['getlastrownuminpage',['getLastRowNumInPage',['../classphp__bs__grid.html#a1853e07eaa5a0cc8f8a682648be6199c',1,'php_bs_grid']]],
+  ['getname',['getName',['../classphp__bs__grid.html#a3d0963e68bb313b163a73f2803c64600',1,'php_bs_grid']]],
+  ['getpagenum',['getPageNum',['../classphp__bs__grid.html#a3c3893a3382fde29548707ed88591279',1,'php_bs_grid']]],
+  ['getsortsimplefield',['getSortSimpleField',['../classphp__bs__grid.html#a9b8c0a3b3107cf05ec77a34fe9e6c2aa',1,'php_bs_grid']]],
+  ['getsortsimpleorder',['getSortSimpleOrder',['../classphp__bs__grid.html#a0c0e2f6830a3fffb77f20ed133ec812d',1,'php_bs_grid']]],
+  ['getstring',['getString',['../classphp__bs__grid.html#a5bfe3256a5202a7ae0cc10c4f76c748c',1,'php_bs_grid']]],
+  ['gettotalpages',['getTotalPages',['../classphp__bs__grid.html#aa5e1dcd24c8ea21ad1d7cddca72c2c08',1,'php_bs_grid']]],
+  ['gettotalrows',['getTotalRows',['../classphp__bs__grid.html#a3c876a5b0b89430b15bf0a18ca450c1b',1,'php_bs_grid']]]
+];
