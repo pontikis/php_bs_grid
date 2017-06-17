@@ -13,23 +13,31 @@ Displays database data in table format.
 * Pagination
 * Simple column sorting
 * Advanced sorting
-* Filters (text, lookup, date)
+* Filters 
+    * text 
+    * lookup 
+    * date 
+    * autocomplete 
+    * multiselect_checkbox
 * Export (Excel .xlsx)
 * Multilanguage
 * Prepared statements supported
+* Fixed WHERE sql supported
 * Responsive design
+* Fully customizable (based on templates) 
+* Save status to $_SESSION
 
 ## Dependencies
 
 ### back-end
-* tested with php 5.6
-* dacapo (database abstraction - MySQL, PostGreSQL) - https://github.com/pontikis/dacapo
+* tested with php 5.6 and php 7
+* dacapo (database abstraction - MySQL, MariaDB, PostGreSQL) - https://github.com/pontikis/dacapo
 * PHPExcel is required for export https://github.com/PHPOffice/PHPExcel
 
 ### front-end
-* jquery https://jquery.com/ (current version 3.1.1)
-* jquery-ui (only datepicker) http://jqueryui.com/ (current version 1.12.1)
-* bootstrap http://getbootstrap.com/ (current version 3.3.7)
+* jquery https://jquery.com/ (tested with v3.1.1)
+* jquery-ui (only datepicker) http://jqueryui.com/ (tested with v1.12.1)
+* bootstrap http://getbootstrap.com/ (tested with v3.3.7)
 
 ## How to use
 

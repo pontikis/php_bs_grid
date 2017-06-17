@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.4 (??/05/2017)
+ * @version 0.9.4 (17 Jun 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
@@ -32,30 +32,45 @@
                 }
                 elem.data(pluginName, settings);
 
-                /* elements and vars ---------------------------------------- */
+                /* define vars ---------------------------------------------- */
                 var elem_php_bs_grid_form = $("#" + settings.php_bs_grid_form_id),
+
+                    // elements
+                    elem_reset_all = $("#" + settings.reset_all_id),
+                    elem_rows_per_page = $("#" + settings.rows_per_page_id),
+                    elem_columns_switcher = $("#" + settings.columns_switcher_id),
+                    elem_columns_to_display = $("#" + settings.columns_to_display_id), // hidden
+                    elem_addnew_record = $("#" + settings.addnew_record_id),
+
+                    elem_sort_simple_field = $("#" + settings.sort_simple_field_id), // hidden
+                    elem_sort_simple_order = $("#" + settings.sort_simple_order_id), // hidden
+                    elem_sort_advanced = $("#" + settings.sort_advanced_id), // hidden
+                    elem_columns_sortable = $(settings.col_sortable_selector), // th of sortable columns
+
                     elem_go_top = $("#" + settings.go_top_id),
                     elem_go_back = $("#" + settings.go_back_id),
                     elem_go_forward = $("#" + settings.go_forward_id),
                     elem_go_bottom = $("#" + settings.go_bottom_id),
-                    elem_rows_per_page = $("#" + settings.rows_per_page_id),
+
                     elem_go_to_page = $("#" + settings.go_to_page_id),
                     elem_page_num = $("#" + settings.page_num_id),
-                    elem_total_pages = $("#" + settings.total_pages_id),
-                    elem_addnew_record = $("#" + settings.addnew_record_id),
-                    elem_columns_to_display = $("#" + settings.columns_to_display_id),
-                    elem_columns_switcher = $("#" + settings.columns_switcher_id),
-                    elem_columns_sortable = $(settings.col_sortable_selector),
-                    elem_sort_simple_field = $("#" + settings.sort_simple_field_id),
-                    elem_sort_simple_order = $("#" + settings.sort_simple_order_id),
-                    elem_sort_advanced = $("#" + settings.sort_advanced_id),
+
+                    elem_total_pages = $("#" + settings.total_pages_id), // hidden
+
+                    elem_export_excel_btn = $("#" + settings.export_excel_btn_id),
+                    elem_export_excel = $("#" + settings.export_excel_id), // hidden
 
                     elem_criteria_apply = $("#" + settings.criteria_apply_id),
                     elem_criteria_reset = $("#" + settings.criteria_reset_id),
+                    elem_criteria_clear = $("#" + settings.criteria_clear_id),
+                    elem_criteria_before = $("#" + settings.criteria_before_id), // hidden
+                    elem_criteria_after = $("#" + settings.criteria_after_id), // hidden
 
-                    elem_export_excel = $("#" + settings.export_excel_id),
-                    elem_export_excel_btn = $("#" + settings.export_excel_btn_id),
+                    // messages
+                    msg_criteria_not_changed = settings.msg_criteria_not_changed,
+                    msg_apply_or_reset_criteria = settings.msg_apply_or_reset_criteria,
 
+                    // php constants
                     v_default_page_num = settings.default_page_num,
                     v_columns_default = settings.columns_default,
                     v_columns_more = settings.columns_more,
@@ -72,32 +87,71 @@
                     v_criteria_operator_date_equal = settings.criteria_operator_date_equal,
                     v_criteria_operator_date_isnull = settings.criteria_operator_date_isnull,
 
+                    // other vars
+                    rows_per_page_before_change = elem_rows_per_page.val(),
                     criteria = settings.criteria,
                     elem_criteria,
                     elem_criteria_operator,
-                    datepicker_params;
+                    elem_criteria_wrapper,
+                    datepicker_params,
+                    elem_criteria_autocomplete,
+                    elem_criteria_filter,
+                    autocomplete_params,
+                    elem_checkbox,
 
-                var getCriterionByName = function(criterion_name) {
+                    a_criteria_ids = [],
+                    criteria_multiple_selector,
+                    elem_criteria_multiple_selector, // a multiple selector contains criteria IDs
+                    criteria_on_load,
+                    criteria_on_post,
+                    criteria_changed,
+                    validate_criteria_result = {
+                        "error": null,
+                        "focus": null,
+                        "text_inputs_contain_value": null,
+                        "ajax_data_to_pass": {}
+                    };
 
-                    var criterion = {};
-                    $.each(criteria, function(key, value) {
-                        if(value.criteria_name === criterion_name) {
-                            criterion = value;
-                            return false;
-                        }
-                    });
-                    return criterion;
-                };
+                // create Multiple Selector from criteria IDs
+                $.each(criteria, function(criterion_name, criterion) {
+                    switch(criterion.type) {
+                        case "text":
+                            a_criteria_ids.push("#" + criterion["params_html"]["dropdown_id"]);
+                            a_criteria_ids.push("#" + criterion["params_html"]["input_id"]);
+                            break;
+                        case "lookup":
+                            a_criteria_ids.push("#" + criterion["params_html"]["dropdown_id"]);
+                            a_criteria_ids.push("#" + criterion["params_html"]["dropdown_lookup_id"]);
+                            break;
+                        case "date":
+                            a_criteria_ids.push("#" + criterion["params_html"]["dropdown_id"]);
+                            a_criteria_ids.push("#" + criterion["params_html"]["input_id"]);
+                            break;
+                        case "autocomplete":
+                            a_criteria_ids.push("#" + criterion["params_html"]["autocomplete_id"]);
+                            a_criteria_ids.push("#" + criterion["params_html"]["filter_id"]);
+                            break;
+                        case "multiselect_checkbox":
+                            $.each(criterion["params_html"]["items"], function(i, item) {
+                                a_criteria_ids.push('#' + item["input_id"]);
+                            });
+                            break;
+                    }
+                });
+                criteria_multiple_selector = a_criteria_ids.join(",");
+                elem_criteria_multiple_selector = $(criteria_multiple_selector);
+
+                // serialize criteria on load
+                criteria_on_load = elem_criteria_multiple_selector.serialize();
+                elem_criteria_before.val(criteria_on_load);
 
                 var arrange_criteria = function(criteria_type) {
-
-                    switch(criteria_type) {
-                        case "text":
-                            $.each(criteria, function(key, value) {
-
-                                if(value.criteria_type === "text") {
-                                    elem_criteria_operator = $("#" + value.dropdown_id);
-                                    elem_criteria = $("#" + value.input_id);
+                    $.each(criteria, function(criterion_name, criterion) {
+                        if(criterion.type === criteria_type) {
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            switch(criteria_type) {
+                                case "text":
+                                    elem_criteria = $("#" + criterion["params_html"]["input_id"]);
 
                                     if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_isnull) {
                                         elem_criteria.val("");
@@ -108,87 +162,101 @@
                                             elem_criteria.val("");
                                         }
                                     }
-                                }
-
-                            });
-                            break;
-
-                        case "lookup":
-                            $.each(criteria, function(key, value) {
-
-                                if(value.criteria_type === "lookup") {
-
-                                    elem_criteria_operator = $("#" + value.dropdown_id);
-                                    elem_criteria = $("#" + value.dropdown_lookup_id);
+                                    break;
+                                case "lookup":
+                                    elem_criteria = $("#" + criterion["params_html"]["dropdown_lookup_id"]);
 
                                     if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_lookup_equal) {
                                         elem_criteria.show();
                                     } else {
                                         elem_criteria.hide();
                                     }
-                                }
+                                    break;
+                                case "date":
+                                    elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+                                    elem_criteria_wrapper = $("#" + criterion["params_html"]["wrapper_id"]);
 
-                            });
-                            break;
-
-                        case "date_start":
-
-                            $.each(criteria, function(key, value) {
-
-                                if(value.criteria_type === "date_start") {
-                                    elem_criteria_operator = $("#" + value.dropdown_id);
-                                    elem_criteria = $("#" + value.input_id);
-
-                                    var assoc = getCriterionByName(value.associated_criteria_name),
-                                        elem_criteria_label_assoc = $("#" + assoc.label_id),
-                                        elem_criteria_operator_assoc = $("#" + assoc.dropdown_id),
-                                        elem_criteria_assoc = $("#" + assoc.input_id);
-
-                                    var criteria_date_operator = parseInt(elem_criteria_operator.val());
-
-                                    if(criteria_date_operator === v_criteria_operator_date_equal ||
-                                        criteria_date_operator === v_criteria_operator_date_isnull) {
-
-                                        elem_criteria_label_assoc.hide();
-                                        elem_criteria_operator_assoc.val(v_criteria_operator_date_ignore);
-                                        elem_criteria_operator_assoc.hide();
-                                        elem_criteria_assoc.val("");
-                                        elem_criteria_assoc.hide();
-
-                                        if(criteria_date_operator === v_criteria_operator_date_isnull) {
-                                            elem_criteria.val("");
-                                            elem_criteria.hide();
+                                    if(elem_criteria_wrapper.is(":visible")) {
+                                        var associated_criteria = false;
+                                        if(criterion.params_html.hasOwnProperty("associated_criteria_name") && criterion["params_html"]["associated_criteria_name"]) {
+                                            associated_criteria = true;
+                                            var criterion_name_assoc = criterion["params_html"]["associated_criteria_name"],
+                                                assoc = criteria[criterion_name_assoc],
+                                                elem_criteria_wrapper_assoc = $("#" + assoc["params_html"]["wrapper_id"]),
+                                                elem_criteria_operator_assoc = $("#" + assoc["params_html"]["dropdown_id"]),
+                                                elem_criteria_assoc = $("#" + assoc["params_html"]["input_id"]);
                                         }
-
-                                    } else {
-
-                                        elem_criteria_label_assoc.show();
-                                        elem_criteria_operator_assoc.show();
-                                        elem_criteria_assoc.show();
-
-                                        elem_criteria.show();
-
-                                        if(criteria_date_operator === v_criteria_operator_date_ignore) {
-                                            elem_criteria.val("");
+                                        var criteria_date_operator = parseInt(elem_criteria_operator.val());
+                                        if(criteria_date_operator === v_criteria_operator_date_equal ||
+                                            criteria_date_operator === v_criteria_operator_date_isnull) {
+                                            if(criteria_date_operator === v_criteria_operator_date_isnull) {
+                                                elem_criteria.val("");
+                                                elem_criteria.hide();
+                                            }
+                                            if(associated_criteria) {
+                                                elem_criteria_operator_assoc.val(v_criteria_operator_date_ignore);
+                                                elem_criteria_assoc.val("");
+                                                elem_criteria_wrapper_assoc.hide();
+                                            }
+                                        } else {
+                                            elem_criteria.show();
+                                            if(criteria_date_operator === v_criteria_operator_date_ignore) {
+                                                elem_criteria.val("");
+                                            }
+                                            if(associated_criteria) {
+                                                elem_criteria_wrapper_assoc.show();
+                                            }
                                         }
                                     }
+                                    break;
+                            }
+                        }
+                    });
+                };
 
-                                }
+                var reset_criterion = function(criterion_name) {
+                    var criterion = criteria[criterion_name];
+                    switch(criterion.type) {
+                        case "text":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["input_id"]);
 
-                            });
+                            elem_criteria_operator.val(criterion["params_html"]["dropdown_value"]);
+                            elem_criteria.val(criterion["params_html"]["input_value"]);
                             break;
+                        case "lookup":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["dropdown_lookup_id"]);
 
-                        case "date_end":
-                            $.each(criteria, function(key, value) {
+                            elem_criteria_operator.val(criterion["params_html"]["dropdown_value"]);
+                            if(criterion["params_html"]["dropdown_lookup_value"]) {
+                                elem_criteria.val(criterion["params_html"]["dropdown_lookup_value"]);
+                            } else {
+                                elem_criteria.prop('selectedIndex', 0);
+                            }
+                            break;
+                        case "date":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["input_id"]);
 
-                                if(value.criteria_type === "date_end") {
-                                    elem_criteria_operator = $("#" + value.dropdown_id);
-                                    elem_criteria = $("#" + value.input_id);
-                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_date_ignore) {
-                                        elem_criteria.val("");
-                                    }
+                            elem_criteria_operator.val(criterion["params_html"]["dropdown_value"]);
+                            elem_criteria.val(criterion["params_html"]["input_value"]);
+                            break;
+                        case "autocomplete":
+                            elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
+                            elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
+
+                            elem_criteria_filter.val(criterion["params_html"]["filter_value"]);
+                            elem_criteria_autocomplete.val(criterion["params_html"]["autocomplete_value"]);
+                            break;
+                        case "multiselect_checkbox":
+                            $.each(criterion["params_html"]["items"], function(index, item) {
+                                elem_checkbox = $("#" + item["input_id"]);
+                                if(jQuery.inArray(parseInt(elem_checkbox.val()), criterion["params_html"]["group_value"]) !== -1) {
+                                    elem_checkbox.prop('checked', true);
+                                } else {
+                                    elem_checkbox.prop('checked', false);
                                 }
-
                             });
                             break;
                     }
@@ -196,50 +264,177 @@
                 };
 
                 var clear_criterion = function(criterion_name) {
+                    var criterion = criteria[criterion_name];
+                    switch(criterion.type) {
+                        case "text":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+                            elem_criteria.val("");
+                            elem_criteria_operator.val(v_criteria_operator_text_ignore);
+                            break;
+                        case "lookup":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria_operator.val(v_criteria_operator_lookup_ignore);
+                            break;
+                        case "date":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+                            elem_criteria.val("");
+                            elem_criteria_operator.val(v_criteria_operator_date_ignore);
+                            break;
+                        case "autocomplete":
+                            elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
+                            elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
+                            elem_criteria_filter.val("");
+                            elem_criteria_autocomplete.val("");
+                            break;
+                        case "multiselect_checkbox":
+                            $.each(criterion["params_html"]["items"], function(i, item) {
+                                $('#' + item["input_id"]).prop('checked', item.default_checked_status);
+                            });
+                            break;
+                    }
+                };
 
-                    var criterion = getCriterionByName(criterion_name);
+                var validate_criteria = function() {
 
-                    if(criterion.criteria_type === "text") {
-                        var elem_criteria_operator = $("#" + criterion.dropdown_id),
-                            elem_criteria = $("#" + criterion.input_id);
-                        elem_criteria.val("");
-                        elem_criteria_operator.val(v_criteria_operator_text_ignore);
-                    }
-                    if(criterion.criteria_type === "lookup") {
-                        elem_criteria_operator = $("#" + criterion.dropdown_id);
-                        elem_criteria_operator.val(v_criteria_operator_lookup_ignore);
-                    }
-                    if(criterion.criteria_type === "date_start") {
-                        elem_criteria_operator = $("#" + criterion.dropdown_id);
-                        elem_criteria = $("#" + criterion.input_id);
-                        elem_criteria.val("");
-                        elem_criteria_operator.val(v_criteria_operator_date_ignore);
-                    }
-                    if(criterion.criteria_type === "date_end") {
-                        elem_criteria_operator = $("#" + criterion.dropdown_id);
-                        elem_criteria = $("#" + criterion.input_id);
-                        elem_criteria.val("");
-                        elem_criteria_operator.val(v_criteria_operator_date_ignore);
-                    }
-                    if(criterion.criteria_type === "autocomplete") {
-                        var elem_criteria_filter = $("#" + criterion.filter_id),
-                            elem_criteria_autocomplete = $("#" + criterion.autocomplete_id);
-                        elem_criteria_filter.val("");
-                        elem_criteria_autocomplete.val("");
-                    }
-                    if(criterion.criteria_type === "multiselect_checkbox") {
-                        $.each(criterion.items, function(i, item) {
-                            $('#' + item.id).prop('checked', item.default_checked_status);
-                        });
-                    }
+                    $.each(criteria, function(criterion_name, criterion) {
+
+                        switch(criterion.type) {
+                            case "text":
+                                elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                                elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+
+                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_isnull) {
+
+                                    elem_criteria.val($.trim(elem_criteria.val()));
+
+                                    if(elem_criteria.val()) {
+                                        validate_criteria_result.text_inputs_contain_value = true;
+                                    }
+                                    validate_criteria_result.ajax_data_to_pass[criterion["params_html"]["input_id"]] = elem_criteria.val();
+
+                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_ignore && elem_criteria.val()) {
+                                        validate_criteria_result.error = criterion["params_html"]["msg_missing_operator"];
+                                        validate_criteria_result.focus = criterion["params_html"]["dropdown_id"];
+                                        return false;
+                                    }
+                                    if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_ignore && !elem_criteria.val()) {
+                                        validate_criteria_result.error = criterion["params_html"]["msg_missing_value"];
+                                        validate_criteria_result.focus = criterion["params_html"]["input_id"];
+                                        return false;
+                                    }
+                                    if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_ignore && elem_criteria.val()) {
+                                        if(criterion.params_html.hasOwnProperty("minchars") && criterion["params_html"]["minchars"]) {
+                                            if(elem_criteria.val().length < criterion["params_html"]["minchars"]) {
+                                                validate_criteria_result.error = criterion["params_html"]["msg_minchars"];
+                                                validate_criteria_result.focus = criterion["params_html"]["input_id"];
+                                                return false;
+                                            }
+                                        }
+                                    }
+
+                                }
+                                break;
+                            case "lookup":
+
+                                break;
+                            case "date":
+                                elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                                elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+
+                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_isnull) {
+
+                                    elem_criteria.val($.trim(elem_criteria.val()));
+
+                                    if(elem_criteria.val()) {
+                                        validate_criteria_result.text_inputs_contain_value = true;
+                                    }
+
+                                    validate_criteria_result.ajax_data_to_pass[criterion["params_html"]["dropdown_id"]] = elem_criteria_operator.val();
+                                    validate_criteria_result.ajax_data_to_pass[criterion["params_html"]["input_id"]] = elem_criteria.val();
+
+                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_date_ignore && elem_criteria.val()) {
+                                        validate_criteria_result.error = criterion["params_html"]["msg_missing_operator"];
+                                        validate_criteria_result.focus = criterion["params_html"]["dropdown_id"];
+                                        return false;
+                                    }
+                                    if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_ignore && !elem_criteria.val()) {
+                                        validate_criteria_result.error = criterion["params_html"]["msg_missing_value"];
+                                        validate_criteria_result.focus = criterion["params_html"]["input_id"];
+                                        return false;
+                                    }
+
+                                }
+                                break;
+                            case "autocomplete":
+
+                                break;
+                            case "multiselect_checkbox":
+                                var count_checked = 0;
+                                $.each(criterion["params_html"]["items"], function(i, item) {
+                                    if($('#' + item["input_id"]).prop('checked') === true) {
+                                        count_checked = count_checked + 1;
+                                    }
+                                });
+                                if(count_checked === 0) {
+                                    validate_criteria_result.error = criterion["params_html"]["msg_all_deselected"];
+                                    validate_criteria_result.focus = criterion["params_html"]["items"][0].input_id;
+                                    return false;
+                                }
+                                break;
+                        }
+
+                    });
+
                 };
 
 
                 /* initialize criteria -------------------------------------- */
                 arrange_criteria("text");
                 arrange_criteria("lookup");
-                arrange_criteria("date_start");
-                arrange_criteria("date_end");
+                arrange_criteria("date");
+
+                /* reset all button ----------------------------------------- */
+                elem_reset_all.click(function() {
+                    if(settings.ajax_reset_all_url) {
+                        $.ajax({
+                            url: settings.ajax_reset_all_url,
+                            type: "POST",
+                            dataType: "json",
+                            success: function(data) {
+                                location.href = data["current_url"];
+                            }
+                        });
+                    } else {
+                        location.href = location.href.split('?')[0];
+                    }
+                });
+
+                /* rows per page -------------------------------------------- */
+                elem_rows_per_page.change(function() {
+                    doSubmit("rows_per_page");
+                });
+
+                /* columns to display --------------------------------------- */
+                elem_columns_switcher.click(function() {
+                    doSubmit("columns_switcher");
+                });
+
+                /* add new record button ------------------------------------ */
+                elem_addnew_record.click(function() {
+                    location.href = settings.addnew_record_url;
+                });
+
+                /* simple (column) sorting ---------------------------------- */
+                elem_columns_sortable.click(function() {
+                    doSubmit("sort_simple", {"col_id": $(this).attr("id")});
+                });
+
+                /* advanced sorting ----------------------------------------- */
+                elem_sort_advanced.change(function() {
+                    doSubmit("sort_advanced");
+                });
 
                 /* pagination ----------------------------------------------- */
                 elem_go_top.click(function() {
@@ -258,11 +453,6 @@
                     doSubmit("go_bottom");
                 });
 
-                elem_rows_per_page.change(function() {
-                    elem_page_num.val(v_default_page_num);
-                    doSubmit("rows_per_page");
-                });
-
                 elem_go_to_page.click(function() {
                     doSubmit("go_to_page");
                 });
@@ -275,164 +465,91 @@
                     }
                 });
 
-                /* add new record button ------------------------------------ */
-                elem_addnew_record.click(function() {
-                    location.href = decodeURI(settings.url_addnew_record);
-                });
-
-                /* columns to display --------------------------------------- */
-                elem_columns_switcher.click(function() {
-                    if(parseInt(elem_columns_to_display.val()) === v_columns_default) {
-                        elem_columns_to_display.val(v_columns_more)
-                    } else {
-                        elem_columns_to_display.val(v_columns_default)
-                    }
-                    doSubmit("columns_switcher");
-                });
-
-                /* simple (column) sorting ---------------------------------- */
-                elem_columns_sortable.click(function() {
-                    var col_id = $(this).attr("id");
-                    if(elem_sort_simple_field.val() === col_id) {
-                        if(elem_sort_simple_order.val() === "ASC") {
-                            elem_sort_simple_order.val("DESC");
-                        } else {
-                            elem_sort_simple_order.val("ASC");
-                        }
-                    } else {
-                        elem_sort_simple_field.val(col_id);
-                        elem_sort_simple_order.val("ASC");
-                    }
-                    doSubmit("sort_simple");
-                });
-
-                /* advanced sorting ----------------------------------------- */
-                elem_sort_advanced.change(function() {
-                    elem_sort_simple_field.val("");
-                    elem_sort_simple_order.val("");
-                    doSubmit("sort_advanced");
+                /* Excel export --------------------------------------------- */
+                elem_export_excel_btn.click(function() {
+                    doSubmit('export_excel');
                 });
 
                 /* criteria ------------------------------------------------- */
-                $.each(criteria, function(key, value) {
-                    if(value.criteria_type === "text") {
-                        elem_criteria_operator = $("#" + value.dropdown_id);
-                        elem_criteria = $("#" + value.input_id);
+                $.each(criteria, function(criterion_name, criterion) {
 
-                        elem_criteria_operator.change(function() {
-                            arrange_criteria("text");
-                            disableExport();
-                        });
+                    switch(criterion.type) {
+                        case "text":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["input_id"]);
 
-                        elem_criteria.on('input', function() {
-                            disableExport();
-                        });
+                            elem_criteria_operator.change(function() {
+                                arrange_criteria("text");
+                            });
 
-                        elem_criteria.keypress(function(e) {
-                            // if the key pressed is the enter key
-                            if(e.which === 13) {
-                                e.preventDefault();
-                                elem_criteria_apply.click();
+                            elem_criteria.keypress(function(e) {
+                                // if the key pressed is the enter key
+                                if(e.which === 13) {
+                                    e.preventDefault();
+                                    elem_criteria_apply.click();
+                                }
+                            });
+                            break;
+                        case "lookup":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["dropdown_lookup_id"]);
+
+                            elem_criteria_operator.change(function() {
+                                arrange_criteria("lookup");
+                            });
+                            break;
+                        case "date":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+
+                            datepicker_params = criterion["params_html"]["datepicker_params"];
+                            if(criterion.params_html.hasOwnProperty("show_time") && criterion["params_html"]["show_time"] === true) {
+                                elem_criteria.datetimepicker(datepicker_params);
+                            } else {
+                                elem_criteria.datepicker(datepicker_params);
                             }
-                        });
-                    }
-                    if(value.criteria_type === "lookup") {
-                        elem_criteria_operator = $("#" + value.dropdown_id);
-                        elem_criteria = $("#" + value.dropdown_lookup_id);
 
-                        elem_criteria.change(function() {
-                            disableExport();
-                        });
+                            elem_criteria_operator.change(function() {
+                                arrange_criteria("date");
+                            });
 
-                        elem_criteria_operator.change(function() {
-                            arrange_criteria("lookup");
-                            disableExport();
-                        });
+                            elem_criteria.keypress(function(e) {
+                                // if the key pressed is the enter key
+                                if(e.which === 13) {
+                                    e.preventDefault();
+                                    elem_criteria_apply.click();
+                                }
+                            });
+                            break;
+                        case "autocomplete":
+                            elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
+                            elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
+                            autocomplete_params = criterion["params_html"]["autocomplete_params"];
+                            // set value to filter field (id) after selection from the list
+                            autocomplete_params.select = function(event, ui) {
+                                elem_criteria_filter.val(ui.item.id);
+                            };
+                            // mustMatch implementation
+                            autocomplete_params.change = function(event, ui) {
+                                if(ui.item === null) {
+                                    elem_criteria_autocomplete.val("");
+                                    elem_criteria_filter.val('');
+                                }
+                            };
+                            elem_criteria_autocomplete.autocomplete(autocomplete_params);
 
-                    }
-                    if(value.criteria_type === "date_start") {
-                        elem_criteria_operator = $("#" + value.dropdown_id);
-                        elem_criteria = $("#" + value.input_id);
+                            // force select from list (mustMatch implementation)
+                            elem_criteria_autocomplete.on('input', function() {
+                                elem_criteria_filter.val('');
+                            });
 
-                        datepicker_params = value.datepicker_params;
-                        datepicker_params.onSelect = function() {
-                            disableExport();
-                        };
-                        if(value.hasOwnProperty("show_time") && value.show_time === true) {
-                            elem_criteria.datetimepicker(datepicker_params);
-                        } else {
-                            elem_criteria.datepicker(datepicker_params);
-                        }
-
-                        elem_criteria_operator.change(function() {
-                            arrange_criteria("date_start");
-                            disableExport();
-                        });
-
-                        elem_criteria.on('input', function() {
-                            disableExport();
-                        });
-
-                        elem_criteria.keypress(function(e) {
-                            // if the key pressed is the enter key
-                            if(e.which === 13) {
-                                e.preventDefault();
-                                elem_criteria_apply.click();
-                            }
-                        });
-                    }
-                    if(value.criteria_type === "date_end") {
-                        elem_criteria_operator = $("#" + value.dropdown_id);
-                        elem_criteria = $("#" + value.input_id);
-
-                        datepicker_params = value.datepicker_params;
-                        datepicker_params.onSelect = function() {
-                            disableExport();
-                        };
-                        if(value.hasOwnProperty("show_time") && value.show_time === true) {
-                            elem_criteria.datetimepicker(datepicker_params);
-                        } else {
-                            elem_criteria.datepicker(datepicker_params);
-                        }
-
-                        elem_criteria_operator.change(function() {
-                            arrange_criteria("date_end");
-                            disableExport();
-                        });
-
-                        elem_criteria.on('input', function() {
-                            disableExport();
-                        });
-
-                        elem_criteria.keypress(function(e) {
-                            // if the key pressed is the enter key
-                            if(e.which === 13) {
-                                e.preventDefault();
-                                elem_criteria_apply.click();
-                            }
-                        });
-                    }
-                    if(value.criteria_type === "autocomplete") {
-                        var elem_criteria_filter = $("#" + value.filter_id),
-                            elem_criteria_autocomplete = $("#" + value.autocomplete_id),
-                            autocomplete_params = value.autocomplete_params;
-
-                        autocomplete_params.select = function(event, ui) {
-                            elem_criteria_filter.val(ui.item.id);
-                            disableExport();
-                        };
-                        elem_criteria_autocomplete.autocomplete(autocomplete_params);
-
-                        // force select from list
-                        elem_criteria_autocomplete.on('input', function() {
-                            elem_criteria_filter.val('');
-                            disableExport();
-                        });
-
-                        // set list width
-                        elem_criteria_autocomplete.on('open', function() {
-                            $(".ui-autocomplete").css("width", elem_criteria_autocomplete.css("width"));
-                        });
+                            // set list width
+                            elem_criteria_autocomplete.on('open', function() {
+                                $(".ui-autocomplete").css("width", elem_criteria_autocomplete.css("width"));
+                            });
+                            break;
+                        case "multiselect_checkbox":
+                            break;
                     }
                 });
 
@@ -442,202 +559,179 @@
                     doSubmit("apply_criteria");
                 });
 
-                /* clear criteria ------------------------------------------- */
+                /* reset criteria ------------------------------------------- */
                 elem_criteria_reset.click(function() {
-                    elem_page_num.val(settings.default_page_num);
-                    $.each(criteria, function(key, value) {
-                        clear_criterion(value.criteria_name);
+                    $.each(criteria, function(criterion_name, criterion) {
+                        reset_criterion(criterion_name);
                     });
                     arrange_criteria("text");
                     arrange_criteria("lookup");
-                    arrange_criteria("date_start");
-                    arrange_criteria("date_end");
-                    doSubmit("reset_criteria");
+                    arrange_criteria("date");
                 });
 
-                /* Excel export --------------------------------------------- */
-                elem_export_excel_btn.click(function() {
-                    elem_export_excel.val(v_export_excel_yes);
-                    elem_php_bs_grid_form.submit();
+                /* clear criteria ------------------------------------------- */
+                elem_criteria_clear.click(function() {
+                    doSubmit("clear_criteria");
                 });
 
                 /**
                  * Validate criteria and submit form
                  */
-                var doSubmit = function(action) {
 
-                    var no_errors = true,
-                        text_inputs_contain_value = false,
-                        ajax_data_to_pass = {};
-
-                    $.each(criteria, function(key, value) {
-
-                        if(value.criteria_type === "text") {
-
-                            var elem_criteria_operator = $("#" + value.dropdown_id),
-                                elem_criteria = $("#" + value.input_id);
-
-                            if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_isnull) {
-
-                                elem_criteria.val($.trim(elem_criteria.val()));
-
-                                if(elem_criteria.val()) {
-                                    text_inputs_contain_value = true;
-                                }
-                                ajax_data_to_pass[value.input_id] = elem_criteria.val();
-
-                                if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_ignore && elem_criteria.val()) {
-                                    no_errors = false;
-                                    show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
-                                    return false;
-                                }
-                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_ignore && !elem_criteria.val()) {
-                                    no_errors = false;
-                                    show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
-                                    return false;
-                                }
-                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_ignore && elem_criteria.val()) {
-                                    if(value.hasOwnProperty("minchars") && value.minchars) {
-                                        if(elem_criteria.val().length < value.minchars) {
-                                            no_errors = false;
-                                            show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_minchars, value.input_id);
-                                            return false;
-                                        }
-                                    }
-                                }
-
-                            }
-
-                        }
-
-                        if(value.criteria_type === "date_start") {
-
-                            elem_criteria_operator = $("#" + value.dropdown_id);
-                            elem_criteria = $("#" + value.input_id);
-
-                            if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_isnull) {
-
-                                elem_criteria.val($.trim(elem_criteria.val()));
-
-                                if(elem_criteria.val()) {
-                                    text_inputs_contain_value = true;
-                                }
-
-                                ajax_data_to_pass[value.dropdown_id] = elem_criteria_operator.val();
-                                ajax_data_to_pass[value.input_id] = elem_criteria.val();
-
-                                if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_date_ignore && elem_criteria.val()) {
-                                    no_errors = false;
-                                    show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
-                                    return false;
-                                }
-                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_ignore && !elem_criteria.val()) {
-                                    no_errors = false;
-                                    show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
-                                    return false;
-                                }
-
-                            }
-
-                        }
-
-                        if(value.criteria_type === "date_end") {
-
-                            elem_criteria_operator = $("#" + value.dropdown_id);
-                            elem_criteria = $("#" + value.input_id);
-
-                            elem_criteria.val($.trim(elem_criteria.val()));
-
-                            if(elem_criteria.val()) {
-                                text_inputs_contain_value = true;
-                            }
-
-                            ajax_data_to_pass[value.dropdown_id] = elem_criteria_operator.val();
-                            ajax_data_to_pass[value.input_id] = elem_criteria.val();
-
-                            if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_date_ignore && elem_criteria.val()) {
-                                no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_operator, value.dropdown_id);
-                                return false;
-                            }
-                            if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_ignore && !elem_criteria.val()) {
-                                no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_missing_value, value.input_id);
-                                return false;
-                            }
-                        }
-
-                        if(value.criteria_type === "multiselect_checkbox") {
-
-                            var count_checked = 0;
-                            $.each(value.items, function(i, item) {
-                                if($('#' + item.id).prop('checked') === true) {
-                                    count_checked = count_checked + 1;
-                                }
-                            });
-                            if(count_checked === 0) {
-                                no_errors = false;
-                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, value.msg_all_deselected, value.items[0].id);
-                                return false;
-                            }
-
-                        }
-
-                    });
-
-                    if(no_errors) {
-                        if(text_inputs_contain_value) {
-                            if(settings.ajax_validate_form_url) {
-                                $.ajax({
-                                    url: decodeURI(settings.ajax_validate_form_url),
-                                    type: "POST",
-                                    data: ajax_data_to_pass,
-                                    dataType: "json",
-                                    success: function(data) {
-                                        if(data["error"]) {
-                                            show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, data["error"], data["focus"]);
-                                        } else {
-                                            doSubmitNoErrors(action);
-                                        }
-                                    }
-                                });
-                            } else {
-                                doSubmitNoErrors(action);
-                            }
-                        } else {
-                            doSubmitNoErrors(action);
-                        }
-                    }
-
-                };
-
-                var doSubmitNoErrors = function(action) {
-                    switch(action) {
-                        case "go_top":
-                            elem_page_num.val(v_default_page_num);
-                            break;
-                        case "go_back":
-                            elem_page_num.val(+elem_page_num.val() - 1);
-                            break;
-                        case "go_forward":
-                            elem_page_num.val(+elem_page_num.val() + 1);
-                            break;
-                        case "go_bottom":
-                            elem_page_num.val(elem_total_pages.val());
-                            break;
-                        case "rows_per_page":
-                            elem_page_num.val(v_default_page_num);
-                            break;
-                        case "go_to_page":
-                            break;
-                    }
-
-                    elem_export_excel.val(v_export_excel_no);
+                var doSubmitForm = function() {
+                    elem_criteria_after.val(criteria_on_post);
                     elem_php_bs_grid_form.submit();
                 };
 
-                var disableExport = function() {
-                    elem_export_excel_btn.prop("disabled", true);
+                var doSubmit = function(action, params) {
+
+                    // clear text in autocomplete fields which does not match with some id (mustMatch)
+                    $.each(criteria, function(criterion_name, criterion) {
+                        if(criterion.type === "autocomplete") {
+                            elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
+                            elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
+                            if(!elem_criteria_filter.val()) {
+                                elem_criteria_autocomplete.val("");
+                            }
+                        }
+                    });
+
+                    if(action === "export_excel") {
+                        elem_export_excel.val(v_export_excel_yes);
+                    } else {
+                        elem_export_excel.val(v_export_excel_no);
+                    }
+
+                    // serialize criteria on post
+                    criteria_on_post = elem_criteria_multiple_selector.serialize();
+
+                    // check if criteria changed
+                    criteria_changed = (criteria_on_load !== criteria_on_post);
+
+                    if(action === 'apply_criteria') {
+
+                        if(criteria_changed) {
+                            validate_criteria();
+                            if(validate_criteria_result.error) {
+                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, validate_criteria_result.error, validate_criteria_result.focus);
+                                validate_criteria_result = {
+                                    "error": null,
+                                    "focus": null,
+                                    "text_inputs_contain_value": null,
+                                    "ajax_data_to_pass": {}
+                                };
+                                return false;
+                            } else {
+                                if(validate_criteria_result.text_inputs_contain_value && settings.ajax_validate_form_url) {
+
+                                    $.ajax({
+                                        url: settings.ajax_validate_form_url,
+                                        type: "POST",
+                                        data: validate_criteria_result.ajax_data_to_pass,
+                                        dataType: "json",
+                                        success: function(data) {
+                                            if(data["error"]) {
+                                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, data["error"], data["focus"]);
+                                                validate_criteria_result = {
+                                                    "error": null,
+                                                    "focus": null,
+                                                    "text_inputs_contain_value": null,
+                                                    "ajax_data_to_pass": {}
+                                                };
+                                                return false;
+                                            } else {
+                                                elem_page_num.val(settings.default_page_num);
+
+                                                doSubmitForm();
+                                            }
+                                        }
+                                    });
+
+                                } else {
+                                    elem_page_num.val(settings.default_page_num);
+
+                                    doSubmitForm();
+                                }
+                            }
+                        } else {
+                            show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, settings.msg_criteria_not_changed);
+                            return false;
+                        }
+
+                    } else {
+
+                        if(action === 'clear_criteria') {
+
+                            elem_page_num.val(settings.default_page_num);
+
+                            $.each(criteria, function(criterion_name, criterion) {
+                                clear_criterion(criterion_name);
+                            });
+                            arrange_criteria("text");
+                            arrange_criteria("lookup");
+                            arrange_criteria("date");
+
+                            // serialize criteria on post (after clear)
+                            criteria_on_post = elem_criteria_multiple_selector.serialize();
+
+                        } else {
+                            if(criteria_changed) {
+                                if(action === "rows_per_page") {
+                                    // revert selected value
+                                    elem_rows_per_page.val(rows_per_page_before_change);
+                                }
+                                show_bs_modal(settings.bs_modal_id, settings.bs_modal_content_id, settings.msg_apply_or_reset_criteria, settings.criteria_apply_id);
+                                return false;
+                            } else {
+                                switch(action) {
+                                    case "rows_per_page":
+                                        elem_page_num.val(v_default_page_num);
+                                        break;
+                                    case "columns_switcher":
+                                        if(parseInt(elem_columns_to_display.val()) === v_columns_default) {
+                                            elem_columns_to_display.val(v_columns_more)
+                                        } else {
+                                            elem_columns_to_display.val(v_columns_default)
+                                        }
+                                        break;
+                                    case "sort_simple":
+                                        if(elem_sort_simple_field.val() === params.col_id) {
+                                            if(elem_sort_simple_order.val() === "ASC") {
+                                                elem_sort_simple_order.val("DESC");
+                                            } else {
+                                                elem_sort_simple_order.val("ASC");
+                                            }
+                                        } else {
+                                            elem_sort_simple_field.val(params.col_id);
+                                            elem_sort_simple_order.val("ASC");
+                                        }
+                                        break;
+                                    case "sort_advanced":
+                                        elem_sort_simple_field.val("");
+                                        elem_sort_simple_order.val("");
+                                        break;
+                                    case "go_top":
+                                        elem_page_num.val(v_default_page_num);
+                                        break;
+                                    case "go_back":
+                                        elem_page_num.val(+elem_page_num.val() - 1);
+                                        break;
+                                    case "go_forward":
+                                        elem_page_num.val(+elem_page_num.val() + 1);
+                                        break;
+                                    case "go_bottom":
+                                        elem_page_num.val(elem_total_pages.val());
+                                        break;
+                                    case "go_to_page":
+                                        break;
+                                }
+                            }
+
+                        }
+
+                        doSubmitForm();
+
+                    }
                 };
 
                 var show_bs_modal = function(bs_modal_id, bs_modal_content_id, content_html, elem_focus_id) {
@@ -678,28 +772,51 @@
         getDefaults: function() {
             return {
                 php_bs_grid_form_id: "php_bs_grid_form",
+
+                reset_all_id: "reset_all",
+                rows_per_page_id: "rows_per_page",
+                columns_switcher_id: "columns_switcher",
+                columns_to_display_id: "columns_to_display", // hidden
+                addnew_record_id: "addnew_record",
+
+                col_sortable_selector: 'th.col-sortable', // th of sortable columns
+                sort_simple_field_id: "sort_simple_field", // hidden
+                sort_simple_order_id: "sort_simple_order", // hidden
+                sort_advanced_id: "sort_advanced",
+
                 go_top_id: "go_top",
                 go_back_id: "go_back",
                 go_forward_id: "go_forward",
                 go_bottom_id: "go_bottom",
-                rows_per_page_id: "rows_per_page",
-                page_num_id: "page_num",
                 go_to_page_id: "go_to_page",
+                page_num_id: "page_num",
                 total_pages_id: "total_pages", // hidden
-                addnew_record_id: "addnew_record",
-                columns_switcher_id: "columns_switcher",
-                columns_to_display_id: "columns_to_display", // hidden
-                col_sortable_class: ".col-sortable",
-                col_sortable_selector: 'th.col-sortable',
-                sort_simple_field_id: "sort_simple_field",  // hidden
-                sort_simple_order_id: "sort_simple_order",  // hidden
-                sort_advanced_id: "sort_advanced",
+
+                export_excel_btn_id: "export_excel_btn",
+                export_excel_id: "export_excel", // hidden
 
                 criteria_apply_id: "criteria_apply",
                 criteria_reset_id: "criteria_reset",
+                criteria_clear_id: "criteria_clear",
+                criteria_before_id: "criteria_before", // hidden
+                criteria_after_id: "criteria_after", // hidden
 
-                export_excel_id: "export_excel",  // hidden
-                export_excel_btn_id: "export_excel_btn"
+                // php constants
+                default_page_num: 1,
+                columns_default: 1,
+                columns_more: 2,
+                export_excel_no: 1,
+                export_excel_yes: 2,
+
+                criteria_operator_text_ignore: 1,
+                criteria_operator_text_isnull: 5,
+
+                criteria_operator_lookup_ignore: 1,
+                criteria_operator_lookup_equal: 2,
+
+                criteria_operator_date_ignore: 1,
+                criteria_operator_date_equal: 2,
+                criteria_operator_date_isnull: 5
             };
         }
     };

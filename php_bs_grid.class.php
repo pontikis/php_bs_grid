@@ -9,56 +9,71 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.4 (??/05/2017)
+ * @version    0.9.4 (17 Jun 2017)
  *
  */
 class php_bs_grid {
 
 	/**
-	 * properties which passed as arguments (22)
+	 * properties which passed as arguments (2)
 	 */
 	private $db_link;
 	private $php_excel;
+
+	/**
+	 * properties which passed as array of arguments (36)
+	 */
+	// general (7)
+	private $name;
+	private $form_action;
+	private $ajax_validate_form_url;
+	private $ajax_reset_all_url;
+	private $a_strings;
+	private $bs_modal_id;
+	private $bs_modal_content_id;
+	// sql (6)
 	private $a_columns;
 	private $select_count_column;
 	private $select_from_sql;
-	private $a_fixed_where = array();
-	private $a_fixed_bind_params = array();
-	private $show_columns_switcher;
-	private $show_addnew_record;
+	private $select_from_sql_more;
+	private $a_fixed_where;
+	private $a_fixed_bind_params;
+	// grid (22)
 	private $rows_per_page_options;
+	private $rows_per_page;
+
+	private $show_columns_switcher;
 	private $columns_to_display_options;
 	private $columns_default_icon;
 	private $columns_more_icon;
+	private $columns_to_display;
+
+	private $show_addnew_record;
+	private $addnew_record_url;
+
 	private $col_sortable_class;
 	private $sort_asc_indicator;
 	private $sort_desc_indicator;
 	private $advanced_sorting_options;
-	private $allow_export_excel;
-	private $export_excel_options;
-	private $export_excel_basename;
-	private $main_template_path;
-	private $criteria_template_path;
-	private $form_action;
-	private $a_strings;
-
-	/**
-	 * properties affected from user interface (7)
-	 */
-	private $page_num;
-	private $rows_per_page;
-	private $columns_to_display;
 	private $sort_simple_field;
 	private $sort_simple_order;
 	private $sort_advanced;
+
+	private $page_num;
+
+	private $allow_export_excel;
+	private $export_excel_options;
+	private $export_excel_basename;
 	private $export_excel;
 
-	/**
-	 * other properties (14)
-	 */
-	// will take values when setCriteria($arr) is called
-	private $a_criteria = array();
+	private $grid_template_path;
+	// criteria (2)
+	private $a_criteria;
+	private $criteria_template_path;
 
+	/**
+	 * other properties (13)
+	 */
 	// will take values when _createSelectSQL() is called
 	private $select_sql = null;
 
@@ -80,7 +95,7 @@ class php_bs_grid {
 	// will take values when retrieveDbData() is called
 	private $db_data = array();
 
-	// will take values when setDbDataFormatted() is called
+	// will take values when retrieveDbData() or setDbDataFormatted() is called
 	private $db_data_formatted = array();
 
 	// will take values when getFirstRowNumInPage() is called
@@ -99,91 +114,69 @@ class php_bs_grid {
 	 */
 	public function __construct(dacapo $db_link, PHPExcel $php_excel, array $dg_params) {
 		/**
-		 * properties which passed as arguments (22)
+		 * properties which passed as arguments (2)
 		 */
 		$this->db_link = $db_link;
 		$this->php_excel = $php_excel;
+
+		/**
+		 * properties which passed as array of arguments (36)
+		 */
+		// general (7)
+		$this->name = $dg_params['dg_name'];
+		$this->form_action = $dg_params['dg_form_action'];
+		$this->ajax_validate_form_url = $dg_params['dg_ajax_validate_form_url'];
+		$this->ajax_reset_all_url = $dg_params['dg_ajax_reset_all_url'];
+		$this->a_strings = $dg_params['dg_strings'];
+		$this->bs_modal_id = $dg_params['dg_bs_modal_id'];
+		$this->bs_modal_content_id = $dg_params['dg_bs_modal_content_id'];
+		// sql (6)
 		$this->a_columns = $dg_params['dg_columns'];
 		$this->select_count_column = $dg_params['dg_select_count_column'];
 		$this->select_from_sql = $dg_params['dg_select_from_sql'];
-		if(array_key_exists('dg_fixed_where', $dg_params)) {
-			$this->a_fixed_where = $dg_params['dg_fixed_where'];
-		}
-		if(array_key_exists('dg_fixed_bind_params', $dg_params)) {
-			$this->a_fixed_bind_params = $dg_params['dg_fixed_bind_params'];
-		}
-		$this->show_columns_switcher = $dg_params['dg_show_columns_switcher'];
-		$this->show_addnew_record = $dg_params['dg_show_addnew_record'];
+		$this->select_from_sql_more = $dg_params['dg_select_from_sql_more'];
+		$this->a_fixed_where = $dg_params['dg_fixed_where'];
+		$this->a_fixed_bind_params = $dg_params['dg_fixed_bind_params'];
+		// grid (22)
 		$this->rows_per_page_options = $dg_params['dg_rows_per_page_options'];
+		$this->rows_per_page = $dg_params['dg_rows_per_page'];
+
+		$this->show_columns_switcher = $dg_params['dg_show_columns_switcher'];
 		$this->columns_to_display_options = $dg_params['dg_columns_to_display_options'];
 		$this->columns_default_icon = $dg_params['dg_columns_default_icon'];
 		$this->columns_more_icon = $dg_params['dg_columns_more_icon'];
+		$this->columns_to_display = $dg_params['dg_columns_to_display'];
+
+		$this->show_addnew_record = $dg_params['dg_show_addnew_record'];
+		$this->addnew_record_url = $dg_params['dg_addnew_record_url'];
+
 		$this->col_sortable_class = $dg_params['dg_col_sortable_class'];
 		$this->sort_asc_indicator = $dg_params['dg_sort_asc_indicator'];
 		$this->sort_desc_indicator = $dg_params['dg_sort_desc_indicator'];
 		$this->advanced_sorting_options = $dg_params['dg_advanced_sorting_options'];
+		$this->sort_simple_field = $dg_params['dg_sort_simple_field'];
+		$this->sort_simple_order = $dg_params['dg_sort_simple_order'];
+		$this->sort_advanced = $dg_params['dg_sort_advanced'];
+
+		$this->page_num = $dg_params['dg_page_num'];
+
 		$this->allow_export_excel = $dg_params['dg_allow_export_excel'];
 		$this->export_excel_options = $dg_params['dg_export_excel_options'];
 		$this->export_excel_basename = $dg_params['dg_export_excel_basename'];
-		$this->main_template_path = $dg_params['dg_main_template_path'];
+		$this->export_excel = $dg_params['dg_export_excel'];
+
+		$this->grid_template_path = $dg_params['dg_grid_template_path'];
+		// criteria (2)
+		$this->a_criteria = $dg_params['dg_criteria'];
 		$this->criteria_template_path = $dg_params['dg_criteria_template_path'];
-		$this->form_action = $dg_params['dg_form_action'];
-		$this->a_strings = $dg_params['dg_strings'];
-
-		/**
-		 * properties affected from user interface (7)
-		 */
-		$this->page_num = $this->sanitize_int('page_num', C_PHP_BS_GRID_DEFAULT_PAGE_NUM, null, null);
-		$this->rows_per_page = $this->sanitize_int('rows_per_page', C_PHP_BS_GRID_DEFAULT_ROWS_PER_PAGE, $this->rows_per_page_options, null);
-		$this->columns_to_display = $this->sanitize_int('columns_to_display', C_PHP_BS_GRID_COLUMNS_DEFAULT, $this->columns_to_display_options, null);
-
-		$this->sort_simple_field = null;
-		if(isset($_POST['sort_simple_field'])) {
-			if(array_key_exists($_POST['sort_simple_field'], $this->a_columns)) {
-				if($this->a_columns[$_POST['sort_simple_field']]['sort_simple']) {
-					$this->sort_simple_field = $_POST['sort_simple_field'];
-				}
-			}
-		}
-
-		$this->sort_simple_order = null;
-		if(isset($_POST['sort_simple_order'])) {
-			if(in_array($_POST['sort_simple_order'], array('ASC', 'DESC'))) {
-				$this->sort_simple_order = $_POST['sort_simple_order'];
-			} else {
-				$this->sort_simple_field = null;
-			}
-		}
-
-		if(!$this->advanced_sorting_options) {
-			if(!$this->sort_simple_field) {
-				foreach($this->a_columns as $key => $column) {
-					if(array_key_exists('sort_simple_default', $column) &&
-						$column['sort_simple_default'] === true
-					) {
-						$this->sort_simple_field = $key;
-						if(array_key_exists('sort_simple_default_order', $column)) {
-							$this->sort_simple_order = $column['sort_simple_default_order'];
-						} else {
-							$this->sort_simple_order = 'ASC';
-						}
-						break;
-					}
-				}
-			}
-		} else {
-			if($this->sort_simple_field) {
-				$this->sort_advanced = C_PHP_BS_GRID_SHORT_ADVANCED_IGNORE;
-			} else {
-				$this->sort_advanced = $this->sanitize_int('sort_advanced', C_PHP_BS_GRID_SHORT_ADVANCED_DEFAULT, null, $this->advanced_sorting_options);
-			}
-		}
-
-		$this->export_excel = $this->sanitize_int('export_excel', C_PHP_BS_GRID_EXPORT_EXCEL_NO, $this->export_excel_options, null);
 
 	}
 
 	// getters -----------------------------------------------------------------
+	public function getName() {
+		return $this->name;
+	}
+
 	public function getPageNum() {
 		return $this->page_num;
 	}
@@ -242,8 +235,8 @@ class php_bs_grid {
 		return $last_row;
 	}
 
-	public function getMainTemplatePath() {
-		return $this->main_template_path;
+	public function getGridTemplatePath() {
+		return $this->grid_template_path;
 	}
 
 	public function getCriteriaTemplatePath() {
@@ -284,10 +277,6 @@ class php_bs_grid {
 	}
 
 	// setters -----------------------------------------------------------------
-	public function setCriteria($a_criteria) {
-		$this->a_criteria = $a_criteria;
-	}
-
 	public function setDbDataFormatted($a_db_data) {
 		$this->db_data_formatted = $a_db_data;
 	}
@@ -313,13 +302,14 @@ class php_bs_grid {
 			$sql = $this->select_sql . ' ' . $this->where_sql . ' ' . $this->sorting_sql . ' ' . $this->limit_sql;
 			$res = $ds->select($sql, $this->bind_params);
 			if(!$res) {
-				$this->last_error = $ds->last_error;
+				$this->last_error = $ds->getLastError();
 				return false;
 			} else {
-				$db_data = $ds->data;
+				$db_data = $ds->getData();
 			}
 		}
 		$this->db_data = $db_data;
+		$this->db_data_formatted = $db_data;
 		return true;
 	}
 
@@ -366,7 +356,7 @@ class php_bs_grid {
 		}
 
 		foreach($a_th as $item) {
-			echo '<th id="' . $item['id'] . '"' . $item['class'] . '>' . $item['sort_indicator'] . $item['header'] . '</th>';
+			echo '<th id="' . $item['id'] . '"' . $item['class'] . '>' . $item['sort_indicator'] . $item['header'] . '</th>' . PHP_EOL;
 		}
 
 	}
@@ -410,15 +400,15 @@ class php_bs_grid {
 		}
 
 		foreach($a_td as $row) {
-			echo '<tr>';
+			echo '<tr>' . PHP_EOL;
 			foreach($row as $key => $cell) {
 				if($key == 0) {
-					echo '<th>' . $cell['data'] . '</th>';
+					echo '<th>' . $cell['data'] . '</th>' . PHP_EOL;
 				} else {
-					echo '<td' . $cell['class'] . '>' . $cell['data'] . '</td>';
+					echo '<td' . $cell['class'] . '>' . $cell['data'] . '</td>' . PHP_EOL;
 				}
 			}
-			echo '</tr>';
+			echo '</tr>' . PHP_EOL;
 		}
 
 	}
@@ -426,7 +416,7 @@ class php_bs_grid {
 
 	public function displayRowsPerPage() {
 		foreach($this->rows_per_page_options as $item) {
-			echo '<option' . ($this->rows_per_page == $item ? ' selected' : '') . ' value="' . $item . '">' . $item . '</option>';
+			echo '<option' . ($this->rows_per_page == $item ? ' selected' : '') . ' value="' . $item . '">' . $item . '</option>' . PHP_EOL;
 		}
 	}
 
@@ -435,7 +425,7 @@ class php_bs_grid {
 			if($key == 1 && !$this->getSortSimpleField()) {
 				continue;
 			}
-			echo '<option' . ($this->sort_advanced == $key ? ' selected' : '') . ' value="' . $key . '">' . $item['text'] . '</option>';
+			echo '<option' . ($this->sort_advanced == $key ? ' selected' : '') . ' value="' . $key . '">' . $item['text'] . '</option>' . PHP_EOL;
 		}
 	}
 
@@ -448,7 +438,8 @@ class php_bs_grid {
 		$params = $this->a_criteria[$criterion]['params_html'];
 
 		// get data from params array
-		$wrapper_div_class = $params['wrapper_div_class'];
+		$wrapper_id = $params['wrapper_id'];
+		$wrapper_class = $params['wrapper_class'];
 
 		$label = $params['label'];
 		$label_id = $params['label_id'];
@@ -468,6 +459,7 @@ class php_bs_grid {
 		$input_value = $params['input_value'];
 
 		// some transformations
+		$wrapper_class_html = !$wrapper_class ? '' : ' class="' . $wrapper_class . '"';
 		$label_id_html = !$label_id ? '' : ' id="' . $label_id . '"';
 		$label_class_html = !$label_class ? '' : ' class="' . $label_class . '"';
 
@@ -485,7 +477,8 @@ class php_bs_grid {
 		}
 
 		$html1 = <<<HTML1
-<div class="{$wrapper_div_class}">
+<div id="{$wrapper_id}"{$wrapper_class_html}>
+
 	<label{$label_id_html}{$label_class_html} for="{$input_id}">{$label}</label>
 
 	<select id="{$dropdown_id}"
@@ -501,6 +494,7 @@ class php_bs_grid {
 		   {$maxlength_html}
 		   {$autocomplete_html}
 		   value="{$input_value}">
+		   
 </div>
 HTML1;
 
@@ -517,7 +511,8 @@ HTML1;
 		$params = $this->a_criteria[$criterion]['params_html'];
 
 		// get data from params array
-		$wrapper_div_class = $params['wrapper_div_class'];
+		$wrapper_id = $params['wrapper_id'];
+		$wrapper_class = $params['wrapper_class'];
 
 		$label = $params['label'];
 		$label_id = $params['label_id'];
@@ -536,6 +531,7 @@ HTML1;
 		$dropdown_lookup_value = $params['dropdown_lookup_value'];
 
 		// some transformations
+		$wrapper_class_html = !$wrapper_class ? '' : ' class="' . $wrapper_class . '"';
 		$label_id_html = !$label_id ? '' : ' id="' . $label_id . '"';
 		$label_class_html = !$label_class ? '' : ' class="' . $label_class . '"';
 
@@ -559,7 +555,8 @@ HTML1;
 
 
 		$html1 = <<<HTML1
-<div class="{$wrapper_div_class}">
+<div id="{$wrapper_id}"{$wrapper_class_html}>
+
 	<label{$label_id_html}{$label_class_html} for="{$dropdown_lookup_id}">{$label}</label>
 
 	<select id="{$dropdown_id}"
@@ -590,7 +587,8 @@ HTML1;
 		$params = $this->a_criteria[$criterion]['params_html'];
 
 		// get data from params array
-		$wrapper_div_class = $params['wrapper_div_class'];
+		$wrapper_id = $params['wrapper_id'];
+		$wrapper_class = $params['wrapper_class'];
 
 		$label = $params['label'];
 		$label_id = $params['label_id'];
@@ -607,14 +605,17 @@ HTML1;
 		$input_class = $params['input_class'];
 		$maxlength = $params['maxlength'];
 		$autocomplete = $params['autocomplete'];
+		$placeholder = $params['placeholder'];
 		$input_value = $params['input_value'];
 
 		// some transformations
+		$wrapper_class_html = !$wrapper_class ? '' : ' class="' . $wrapper_class . '"';
 		$label_id_html = !$label_id ? '' : ' id="' . $label_id . '"';
 		$label_class_html = !$label_class ? '' : ' class="' . $label_class . '"';
 
 		$maxlength_html = !$maxlength ? '' : 'maxlength="' . $maxlength . '"';
 		$autocomplete_html = $autocomplete ? '' : 'autocomplete="off"';
+		$placeholder_html = !$placeholder ? '' : ' placeholder="' . $placeholder . '"';
 		$input_value = htmlspecialchars($input_value);
 
 		// create dropdown options html
@@ -627,7 +628,8 @@ HTML1;
 		}
 
 		$html1 = <<<HTML1
-<div class="{$wrapper_div_class}">
+<div id="{$wrapper_id}"{$wrapper_class_html}>
+
 	<label{$label_id_html}{$label_class_html} for="{$input_id}">{$label}</label>
 
 	<select id="{$dropdown_id}"
@@ -642,7 +644,9 @@ HTML1;
 		   class="{$input_class}"
 		   {$maxlength_html}
 		   {$autocomplete_html}
+		   {$placeholder_html}
 		   value="{$input_value}">
+
 </div>
 HTML1;
 
@@ -670,6 +674,7 @@ HTML1;
 		$autocomplete_name = $params['autocomplete_name'];
 		$autocomplete_class = $params['autocomplete_class'];
 		$autocomplete_style = $params['autocomplete_style'];
+		$autocomplete_placeholder = $params['autocomplete_placeholder'];
 		$autocomplete_value = htmlspecialchars($params['autocomplete_value']);
 
 		$filter_wrapper_class = $params['filter_wrapper_class'];
@@ -688,12 +693,13 @@ HTML1;
 		$autocomplete_label_id_html = !$autocomplete_label_id ? '' : ' id="' . $autocomplete_label_id . '"';
 		$autocomplete_label_class_html = !$autocomplete_label_class ? '' : ' class="' . $autocomplete_label_class . '"';
 		$autocomplete_style_html = !$autocomplete_style ? '' : ' style="' . $autocomplete_style . '"';
+		$autocomplete_placeholder_html = !$autocomplete_placeholder ? '' : ' placeholder="' . $autocomplete_placeholder . '"';
 		$filter_label_id_html = !$filter_label_id ? '' : ' id="' . $filter_label_id . '"';
 		$filter_label_class_html = !$filter_label_class ? '' : ' class="' . $filter_label_class . '"';
 		$filter_style_html = !$filter_style ? '' : ' style="' . $filter_style . '"';
 
 		$html1 = <<<HTML1
-<div id="{$wrapper_id}{$wrapper_class_html}">
+<div id="{$wrapper_id}"{$wrapper_class_html}>
 
 	<div class="{$autocomplete_wrapper_class}">
 	
@@ -704,6 +710,7 @@ HTML1;
 				   name="{$autocomplete_name}"
 				   class="{$autocomplete_class}"
 				   {$autocomplete_style_html}
+				   {$autocomplete_placeholder_html}
 				   value="{$autocomplete_value}">
 		</div>
 	
@@ -781,10 +788,12 @@ HTML1;
 
 		$html1 = <<<HTML1
 <div id="{$wrapper_id}"{$wrapper_class_html}>
+
 <fieldset{$fieldset_id_html}{$fieldset_class_html}>
     <legend{$legend_id_html}{$legend_class_html}{$legend_style_html}>{$legend}</legend>
 	{$items_html}
 </fieldset>
+
 </div>
 HTML1;
 
@@ -862,30 +871,6 @@ HTML1;
 
 	}
 
-	public function sanitize_int($param, $default_value, $arr_to_belong, $arr_has_key) {
-		$result = $default_value;
-		if(isset($_POST[$param])) {
-			if($this->_is_positive_integer($_POST[$param])) {
-				$tmp = $this->_trim_integer($_POST[$param]);
-				$result = (int)$tmp;
-
-				if($arr_to_belong) {
-					if(!in_array($tmp, $arr_to_belong)) {
-						$result = $default_value;
-					}
-				}
-
-				if($arr_has_key) {
-					if(!array_key_exists($tmp, $arr_has_key)) {
-						$result = $default_value;
-					}
-				}
-
-			}
-		}
-		return $result;
-	}
-
 	/**
 	 *
 	 */
@@ -901,7 +886,8 @@ HTML1;
 			}
 			$select .= $column['select_sql'] . ', ';
 		}
-		$select = rtrim($select, ', ') . ' ' . $this->select_from_sql;
+		$select = rtrim($select, ', ') . ' ' .
+			($this->columns_to_display === C_PHP_BS_GRID_COLUMNS_DEFAULT ? $this->select_from_sql : $this->select_from_sql_more);
 
 		$this->select_sql = $select;
 
@@ -957,15 +943,15 @@ HTML1;
 						case C_PHP_BS_GRID_CRITERIA_TEXT_IGNORE:
 							break;
 						case C_PHP_BS_GRID_CRITERIA_TEXT_EQUAL:
-							array_push($a_whereSQL, $criterion['sql_column'] . ' = ?');
+							array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
 						case C_PHP_BS_GRID_CRITERIA_TEXT_STARTS_WITH:
-							array_push($a_whereSQL, $criterion['sql_column'] . ' LIKE ?');
+							array_push($a_whereSQL, $criterion['sql_column'] . ' LIKE ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value'] . '%');
 							break;
 						case C_PHP_BS_GRID_CRITERIA_TEXT_CONTAINS:
-							array_push($a_whereSQL, $criterion['sql_column'] . ' LIKE ?');
+							array_push($a_whereSQL, $criterion['sql_column'] . ' LIKE ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, '%' . $criterion['column_value'] . '%');
 							break;
 						case C_PHP_BS_GRID_CRITERIA_TEXT_IS_NULL:
@@ -979,7 +965,7 @@ HTML1;
 						case C_PHP_BS_GRID_CRITERIA_LOOKUP_IGNORE:
 							break;
 						case C_PHP_BS_GRID_CRITERIA_LOOKUP_EQUAL:
-							array_push($a_whereSQL, $criterion['sql_column'] . ' = ?');
+							array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
 						case C_PHP_BS_GRID_CRITERIA_LOOKUP_IS_NULL:
@@ -990,35 +976,25 @@ HTML1;
 
 				case 'autocomplete':
 					if($criterion['column_value']) {
-						array_push($a_whereSQL, $criterion['sql_column'] . ' = ?');
+						array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 						array_push($bind_params, $criterion['column_value']);
 					}
 					break;
 
-				case 'date_start':
+				case 'date':
 					switch($criterion['sql_comparison_operator']) {
 						case C_PHP_BS_GRID_CRITERIA_DATE_IGNORE:
 							break;
 						case C_PHP_BS_GRID_CRITERIA_DATE_EQUAL:
-							array_push($a_whereSQL, $criterion['sql_column'] . ' = ?');
+							array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
 						case C_PHP_BS_GRID_CRITERIA_DATE_GREATER_THAN_OR_EQUAL_TO:
-							array_push($a_whereSQL, $criterion['sql_column'] . ' >= ?');
+							array_push($a_whereSQL, $criterion['sql_column'] . ' >= ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
-						case C_PHP_BS_GRID_CRITERIA_DATE_IS_NULL:
-							array_push($a_whereSQL, $criterion['sql_column'] . ' IS NULL');
-							break;
-					}
-					break;
-
-				case 'date_end':
-					switch($criterion['sql_comparison_operator']) {
-						case C_PHP_BS_GRID_CRITERIA_DATE_IGNORE:
-							break;
 						case C_PHP_BS_GRID_CRITERIA_DATE_LESS_THAN_OR_EQUAL_TO:
-							array_push($a_whereSQL, $criterion['sql_column'] . ' <= ?');
+							array_push($a_whereSQL, $criterion['sql_column'] . ' <= ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
 						case C_PHP_BS_GRID_CRITERIA_DATE_IS_NULL:
@@ -1031,12 +1007,12 @@ HTML1;
 					if($criterion['column_value'] && $criterion['column_value'] != $criterion['value_to_ignore']) {
 						$count_params = count($criterion['column_value']);
 						if($count_params === 1) {
-							array_push($a_whereSQL, $criterion['sql_column'] . ' = ?');
+							array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value'][0]);
 						} else {
 							$IN_SQL = '(';
 							foreach($criterion['column_value'] as $key => $item) {
-								$IN_SQL .= '?';
+								$IN_SQL .= C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER;
 								if($key < $count_params - 1) {
 									$IN_SQL .= ',';
 								}
@@ -1080,10 +1056,10 @@ HTML1;
 		$query_options = array('get_row' => true);
 		$res = $ds->select($sql, $this->bind_params, $query_options);
 		if(!$res) {
-			$this->last_error = $ds->last_error;
+			$this->last_error = $ds->getLastError();
 			return false;
 		}
-		$rs = $ds->data;
+		$rs = $ds->getData();
 		$this->total_rows = $rs['totalrows'];
 		$this->total_pages = ceil($this->total_rows / $this->rows_per_page);
 
@@ -1101,14 +1077,6 @@ HTML1;
 			$limitSQL = $ds->limit($this->rows_per_page, ($this->page_num - 1) * $this->rows_per_page);
 		}
 		$this->limit_sql = $limitSQL;
-	}
-
-	private function _is_positive_integer($str) {
-		return (is_numeric($str) && $str > 0 && $str == round($str));
-	}
-
-	private function _trim_integer($str) {
-		return ltrim(trim($str), "0");
 	}
 
 }

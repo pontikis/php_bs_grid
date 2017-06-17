@@ -11,24 +11,6 @@
     cursor: ns-resize;
 }
 
-/* xs */
-.resp-align { text-align: left; }
-
-/* sm */
-@media(min-width:768px) {
-    .resp-align { text-align: right; }
-}
-
-/* md */
-@media(min-width:992px) {
-    .resp-align { text-align: right; }
-}
-
-/* lg */
-@media(min-width:1200px) {
-    .resp-align { text-align: right; }
-}
-
 fieldset {
     border: 1px solid #cccccc !important;
     margin: 0;

@@ -5,67 +5,66 @@
     <div class="row"
          style="margin-top: 15px; margin-bottom: 5px;">
 
-        <!--  Rows per page  -->
-        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"
+        <!--  Reset all  -->
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2"
              style="margin-bottom: 10px;">
 
-            <div class="form-group form-inline"
-                 style="margin-bottom: 0">
-                <label for="rows-per-page"><?php print $dg->getString('rows_per_page') ?></label>
-                <select id="rows_per_page"
-                        name="rows_per_page"
-                        class="form-control"
-                        style="max-width: 100px;">
-					<?php $dg->displayRowsPerPage() ?>
-                </select>
-            </div>
+            <button id="reset_all"
+                    type="button"
+                    class="btn btn-default">
+                <span class="glyphicon glyphicon-repeat"></span> <?php print $dg->getString('reset_all') ?>
+            </button>
 
         </div>
 
-        <!--  Column switcher  -->
 		<?php if($dg->getTotalRows() > 0) { ?>
 
-            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"
+            <!--  Rows per page  -->
+            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"
                  style="margin-bottom: 10px;">
 
-				<?php if($dg->showColumnsSwitcher()) { ?>
+                <div class="form-group form-inline"
+                     style="margin-bottom: 0">
+                    <label for="rows-per-page"><?php print $dg->getString('rows_per_page') ?></label>
+                    <select id="rows_per_page"
+                            name="rows_per_page"
+                            class="form-control"
+                            style="max-width: 100px;">
+						<?php $dg->displayRowsPerPage() ?>
+                    </select>
+                </div>
 
-                    <button type="button"
-                            id="columns_switcher"
+            </div>
+
+            <!--  Column switcher  -->
+			<?php if($dg->showColumnsSwitcher()) { ?>
+
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"
+                     style="margin-bottom: 10px;">
+
+                    <button id="columns_switcher"
+                            type="button"
                             class="btn btn-default">
                         <span class="<?php print $dg->getColumnsToDisplayIcon() ?>"></span> <?php print $dg->getColumnsToDisplayText() ?>
                     </button>
 
-				<?php } ?>
+                </div>
+
+			<?php } ?>
+
+		<?php } ?>
+
+        <!--  Add new record  -->
+		<?php if($dg->showAddnewRecord()) { ?>
+
+            <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"
+                 style="margin-bottom: 10px;">
+
+                <button id="addnew_record"
+                        type="button"
+                        class="btn btn-success"><?php print $dg->getString('addnew_record') ?></button>
 
             </div>
-
-            <!--  Add new record  -->
-			<?php if($dg->showAddnewRecord()) { ?>
-
-				<?php //TODO replace resp-align class in Bootstrap 4 (text-xs- etc)  ?>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 resp-align"
-                     style="margin-bottom: 10px;">
-
-                    <button id="addnew_record"
-                            class="btn btn-success"><?php print $dg->getString('addnew_record') ?></button>
-
-                </div>
-
-			<?php } ?>
-
-		<?php } else { ?>
-
-            <!--  Add new record  -->
-			<?php if($dg->showAddnewRecord()) { ?>
-
-                <div class="col-xs-12"
-                     style="margin-bottom: 10px;">
-                    <button id="addnew_record"
-                            class="btn btn-success"><?php print $dg->getString('addnew_record') ?></button>
-                </div>
-
-			<?php } ?>
 
 		<?php } ?>
 
@@ -116,7 +115,8 @@
                 <strong><?php print $dg->getString('total_rows') ?></strong><?php print ': ' . $dg->getTotalRows() . ' ' ?>
                 <strong><?php print $dg->getString('Page') . ' ' ?></strong> <?php print $dg->getPageNum() ?>
 				<?php print $dg->getString('from') . ' ' ?><?php print $dg->getTotalPages() ?>
-                (<strong><?php print $dg->getString('rows') ?></strong><?php print ' ' . $dg->getFirstRowNumInPage() . ' - ' . $dg->getLastRowNumInPage() ?>)
+                (
+                <strong><?php print $dg->getString('rows') ?></strong><?php print ' ' . $dg->getFirstRowNumInPage() . ' - ' . $dg->getLastRowNumInPage() ?>)
 
 			<?php } else { ?>
 
@@ -154,8 +154,8 @@
 
 				<?php if($dg->allowExportExcel()) { ?>
 
-                    <button type="button"
-                            id="export_excel_btn"
+                    <button id="export_excel_btn"
+                            type="button"
                             class="btn btn-sm btn-success">
                         <span class="glyphicon glyphicon-export"></span> <?php print $dg->getString('export_excel') ?>
                     </button>
@@ -222,8 +222,8 @@
 
                 <div class="input-group">
                         <span class="input-group-btn">
-                            <button type="button"
-                                    id="go_to_page"
+                            <button id="go_to_page"
+                                    type="button"
                                     class="btn btn-default"><?php print $dg->getString('go_to_page') ?></button>
                         </span>
 
@@ -272,6 +272,20 @@
     <input type="hidden"
            id="export_excel"
            name="export_excel"
-           value="<?php print $dg->getExportExcel() ?>">
+           value="">
 
+    <input type="hidden"
+           id="criteria_before"
+           name="criteria_before"
+           value="">
+
+    <input type="hidden"
+           id="criteria_after"
+           name="criteria_after"
+           value="">
+
+    <input type="hidden"
+           id="dg_status"
+           name="dg_status"
+           value="<?php print $dg_status ?>">
 </form>
