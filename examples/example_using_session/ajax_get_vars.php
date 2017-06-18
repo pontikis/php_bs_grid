@@ -1,4 +1,5 @@
 <?php
+session_start();
 $a_vars = array();
 $a_dg_params = array();
 if(isset($_POST['dg_status']) && $_POST['dg_status']) {

@@ -10,9 +10,10 @@ Project page https://github.com/pontikis/php_bs_grid
 License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 
 
-Release 0.9.4 (18 June 2017)
+Release 0.9.4 (19 June 2017)
 --------------------------
 
+* documentation #20
 * Fixed where SQL #19
 * pass serialized params from php to javascript #18
 * Save status to SESSION #17

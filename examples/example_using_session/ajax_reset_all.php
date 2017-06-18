@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 if(isset($_SESSION['php_bs_grid_calendar'])) {
 	unset($_SESSION['php_bs_grid_calendar']);
 }

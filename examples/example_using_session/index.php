@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 /**
  * Example file for php_bs_grid
  */
@@ -774,7 +776,7 @@ if($dg_params_criteria == 'define') {
 		)
 	);
 
-	$a_dg_params['dg_criteria_template_path'] = C_PROJECT_PATH . '/app/crm/calendar/archive/criteria.php';
+	$a_dg_params['dg_criteria_template_path'] = '/path/to/criteria.php';
 } elseif($dg_params_criteria == 'pull_from_session') {
 	$a_dg_params['dg_criteria'] = $_SESSION[$dg_name]['dg_criteria'];
 	$a_dg_params['dg_criteria_template_path'] = $_SESSION[$dg_name]['dg_criteria_template_path'];

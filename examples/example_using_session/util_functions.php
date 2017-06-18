@@ -175,3 +175,13 @@ function decode_usr_datetime_short($dt) {
 	}
 	return date_convert($dt, $tz1, $df1, $tz2, $df2, $intl);
 }
+
+
+function encode_usr_datetime_short($dt) {
+	global $conf;
+	$tz1 = $_SESSION['user_timezone'];
+	$df1 = $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['php_datetime_short'];
+	$tz2 = C_SERVER_TIMEZONE;
+	$df2 = C_SERVER_DATEFORMAT;
+	return date_convert($dt, $tz1, $df1, $tz2, $df2);
+}

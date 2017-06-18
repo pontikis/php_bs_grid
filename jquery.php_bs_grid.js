@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.4 (18 Jun 2017)
+ * @version 0.9.4 (19 Jun 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
