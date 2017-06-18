@@ -76,4 +76,4 @@ Coming soon at http://www.pontikis.net/labs
 
 Desktop:
 
-![Desktop](https://github.com/pontikis/php_bs_grid/screenshots/desktop.png)
+![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/desktop.png)
