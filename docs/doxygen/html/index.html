@@ -107,6 +107,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </li>
 <li>Export (Excel .xlsx)</li>
 <li>Multilanguage</li>
+<li>Databases supported: MySQL (or MariaDB), PostgreSQL</li>
 <li>Prepared statements supported</li>
 <li>Fixed WHERE sql supported</li>
 <li>Responsive design</li>
@@ -123,13 +124,47 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <h3>front-end</h3>
 <ul>
 <li>jquery <a href="https://jquery.com/">https://jquery.com/</a> (tested with v3.1.1)</li>
-<li>jquery-ui (only datepicker) <a href="http://jqueryui.com/">http://jqueryui.com/</a> (tested with v1.12.1)</li>
-<li>bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> (tested with v3.3.7)</li>
+<li>jquery-ui (datepicker, autocomplete) <a href="http://jqueryui.com/">http://jqueryui.com/</a> (tested with v1.12.1)</li>
+<li>jQuery-Timepicker-Addon <a href="http://trentrichardson.com/examples/timepicker/">http://trentrichardson.com/examples/timepicker/</a> (tested with v1.6.3)</li>
+<li>twitter bootstrap <a href="http://getbootstrap.com/">http://getbootstrap.com/</a> (tested with v3.3.7)</li>
 </ul>
+<h2>Files</h2>
+<ol type="1">
+<li><code><a class="el" href="php__bs__grid_8class_8php.html">php_bs_grid.class.php</a></code> php class</li>
+<li><code>jquery.php_bs_grid.js</code> jquery plugin (minified version also available for production)</li>
+<li><code>constants.php</code> php constants to include</li>
+<li><code>template.php</code> default template</li>
+<li><code>php_bs_grid.css</code> default css file</li>
+</ol>
+<h2>Documentation</h2>
+<p>See <code>docs/doxygen/html</code> for html documentation of <code><a class="el" href="classphp__bs__grid.html">php_bs_grid</a></code> class.</p>
+<p>See <code>docs/jsdoc</code> for html documentation of <code><a class="el" href="classphp__bs__grid.html">php_bs_grid</a></code> jquery plugin.</p>
+<p>See also Github Wiki <a href="https://github.com/pontikis/php_bs_grid/wiki">https://github.com/pontikis/php_bs_grid/wiki</a></p>
 <h2>How to use</h2>
-<p>See example.php, example.js</p>
-<p>Documentation coming soon </p>
-</div></div><!-- contents -->
+<p>See <code>examples</code> folder.</p>
+<p>In <code>examples/example_common</code> folder find an example where a hidden field (<code>dg_status</code>) is used to pass the serialized status of <code><a class="el" href="classphp__bs__grid.html">php_bs_grid</a></code> to javascript using an ajax call (<code>ajax_get_vars.php</code>).</p>
+<p>In <code>examples/example_using_session</code> folder find an example where <code>$_SESSION</code> is used to keep the status of <code><a class="el" href="classphp__bs__grid.html">php_bs_grid</a></code>. You can pass <code><a class="el" href="classphp__bs__grid.html">php_bs_grid</a></code> parameters to javascript using an ajax call (<code>ajax_get_vars.php</code>). Moreover, you can return to recent status (filters, pagination etc) after returning to datagrid page from another page. This is the recommended use of <code><a class="el" href="classphp__bs__grid.html">php_bs_grid</a></code>`.</p>
+<p>Custom functions included in <code>util_functions.php</code>. They have <b>nothing to do with</b> <code><a class="el" href="classphp__bs__grid.html">php_bs_grid</a></code>` functionality. I quote them just for rerefrence.</p>
+<h2>See it in action</h2>
+<p>Coming soon at <a href="http://www.pontikis.net/labs">http://www.pontikis.net/labs</a></p>
+<h2>Screenshots</h2>
+<p>Desktop:</p>
+<div class="image">
+<img src="https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/desktop.png"  alt="Desktop"/>
+</div>
+<p>Nexus 5:</p>
+<div class="image">
+<img src="https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/Nexus-5X.png"  alt="Desktop"/>
+</div>
+<p>iPhone 6:</p>
+<div class="image">
+<img src="https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/iPhone-6.png"  alt="Desktop"/>
+</div>
+<p>iPad:</p>
+<div class="image">
+<img src="https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/iPad.png"  alt="Desktop"/>
+</div>
+ </div></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>

@@ -2,7 +2,7 @@ var indexSectionsWithContent =
 {
   0: "$_acdegprs",
   1: "p",
-  2: "cpr",
+  2: "cdpr",
   3: "_adegrs",
   4: "$",
   5: "cp"

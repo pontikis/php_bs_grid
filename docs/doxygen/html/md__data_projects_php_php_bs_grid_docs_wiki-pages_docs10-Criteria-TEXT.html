@@ -8,7 +8,7 @@
         <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
         <meta name="generator" content="Doxygen 1.8.11"/>
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <title>php_bs_grid: CHANGELOG</title>
+        <title>php_bs_grid: php_bs_grid parameters: Criteria - TEXT</title>
         <!--<link href="tabs.css" rel="stylesheet" type="text/css"/>-->
         <script type="text/javascript" src="dynsections.js"></script>
         <link href="search/search.css" rel="stylesheet" type="text/css"/>
@@ -84,63 +84,10 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">CHANGELOG </div>  </div>
+<div class="title"><a class="el" href="classphp__bs__grid.html">php_bs_grid</a> parameters: Criteria - TEXT </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>php datagrid with jquery, bootstrap frontend</p>
-<p>Copyright Christos Pontikis <a href="http://www.pontikis.net">http://www.pontikis.net</a></p>
-<p>Project page <a href="https://github.com/pontikis/php_bs_grid">https://github.com/pontikis/php_bs_grid</a></p>
-<p>License MIT <a href="https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE">https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE</a></p>
-<h2>Release 0.9.4 (19 June 2017) </h2>
-<ul>
-<li>documentation #20</li>
-<li>Fixed where SQL #19</li>
-<li>pass serialized params from php to javascript #18</li>
-<li>Save status to SESSION #17</li>
-<li>Implement multiselect_checkbox criteria #11</li>
-<li>Implement autocomplete criteria #14</li>
-<li>Implement datetime criteria #15</li>
-<li>Fixed WHERE statements (beyond filters applied by the user interface) #13</li>
-<li>Added sort_simple_default_order column property #12</li>
-</ul>
-<h2>Release 0.9.3 (15 May 2017) </h2>
-<ul>
-<li>trim filter values #10</li>
-<li>filter min chars (after trim) #9</li>
-<li>fix typo (th_class instead of td_class) in displayTableData #8</li>
-</ul>
-<h2>Release 0.9.2 (14 Apr 2017) </h2>
-<ul>
-<li>bug fixed - Ajax error on press Enter (13) #7</li>
-<li>Rows per page always visible (top row) #6</li>
-</ul>
-<h2>Release 0.9.1 (13 Apr 2017) </h2>
-<ul>
-<li>bugs using [is_null] operators (fixed) #5</li>
-<li>minified js version added</li>
-</ul>
-<h2>Release 0.9.0 (10 Apr 2017) </h2>
-<ul>
-<li>Excel export added (CSV export removed) #4</li>
-</ul>
-<h2>Release 0.8.0 (9 Apr 2017) </h2>
-<p>Basic functionality #1</p>
-<ul>
-<li>Customizable columns</li>
-<li>Pagination</li>
-<li>Simple column sorting</li>
-<li>Advanced sorting</li>
-<li>Filters (text, lookup, date)</li>
-<li>Export (CSV)</li>
-<li>Multilanguage</li>
-<li>Support prepared statements</li>
-<li>Responsive design</li>
-</ul>
-<h2>Release 0.1.0 (3 Apr 2017) </h2>
-<ul>
-<li>just started </li>
-</ul>
-</div></div><!-- contents -->
+<div class="textblock"><div class="fragment"><div class="line"><span class="comment">// define operators</span></div><div class="line">$a_criteria_operators_description = array(</div><div class="line">    C_PHP_BS_GRID_CRITERIA_TEXT_IGNORE =&gt; <span class="stringliteral">&#39;Please select&#39;</span>,</div><div class="line">    C_PHP_BS_GRID_CRITERIA_TEXT_EQUAL =&gt; <span class="stringliteral">&#39;equal&#39;</span>,</div><div class="line">    C_PHP_BS_GRID_CRITERIA_TEXT_STARTS_WITH =&gt; <span class="stringliteral">&#39;starts with&#39;</span>,</div><div class="line">    C_PHP_BS_GRID_CRITERIA_TEXT_CONTAINS =&gt; <span class="stringliteral">&#39;contains&#39;</span></div><div class="line">);</div><div class="line"></div><div class="line"><span class="comment">// define html params</span></div><div class="line">$a_criteria_params_html_description = array(</div><div class="line">    <span class="stringliteral">&#39;wrapper_id&#39;</span> =&gt; <span class="stringliteral">&#39;criteria_description_wrapper&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;wrapper_class&#39;</span> =&gt; <span class="stringliteral">&#39;form-group form-inline&#39;</span>,</div><div class="line"></div><div class="line">    <span class="stringliteral">&#39;label&#39;</span> =&gt; <span class="stringliteral">&#39;Description&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;label_id&#39;</span> =&gt; <span class="stringliteral">&#39;&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;label_class&#39;</span> =&gt; <span class="stringliteral">&#39;&#39;</span>,</div><div class="line"></div><div class="line">    <span class="stringliteral">&#39;dropdown_id&#39;</span> =&gt; <span class="stringliteral">&#39;criteria_operator_description&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;dropdown_name&#39;</span> =&gt; <span class="stringliteral">&#39;criteria_operator_description&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;dropdown_class&#39;</span> =&gt; <span class="stringliteral">&#39;form-control&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;dropdown_options&#39;</span> =&gt; $a_criteria_operators_description,</div><div class="line">    <span class="stringliteral">&#39;dropdown_value&#39;</span> =&gt; $criteria_operator_description,</div><div class="line"></div><div class="line">    <span class="stringliteral">&#39;input_id&#39;</span> =&gt; <span class="stringliteral">&#39;criteria_description&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;input_name&#39;</span> =&gt; <span class="stringliteral">&#39;criteria_description&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;input_class&#39;</span> =&gt; <span class="stringliteral">&#39;form-control&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;maxlength&#39;</span> =&gt; 100,</div><div class="line">    <span class="stringliteral">&#39;autocomplete&#39;</span> =&gt; <span class="keyword">true</span>,</div><div class="line">    <span class="stringliteral">&#39;input_value&#39;</span> =&gt; $criteria_description,</div><div class="line"></div><div class="line">    <span class="stringliteral">&#39;msg_missing_operator&#39;</span> =&gt; <span class="stringliteral">&#39;Please, give description search type&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;msg_missing_value&#39;</span> =&gt; <span class="stringliteral">&#39;Please, give description to search&#39;</span>,</div><div class="line">    <span class="stringliteral">&#39;minchars&#39;</span> =&gt; 2,</div><div class="line">    <span class="stringliteral">&#39;msg_minchars&#39;</span> =&gt; <span class="stringliteral">&#39;Please, give at least two characters to description&#39;</span>,</div><div class="line">);</div></div><!-- fragment --> </div></div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.8-->
 <!-- start footer part -->
 </div>
