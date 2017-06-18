@@ -77,3 +77,15 @@ Coming soon at http://www.pontikis.net/labs
 Desktop:
 
 ![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/desktop.png)
+
+Nexus 5:
+
+![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/Nexus-5X.png)
+
+iPhone 6:
+
+![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/iPhone-6.png)
+
+iPad:
+
+![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/iPad.png)
