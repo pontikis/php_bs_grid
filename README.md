@@ -74,4 +74,6 @@ Coming soon at http://www.pontikis.net/labs
 
 ## Screenshots
 
-Coming soon at http://www.pontikis.net/labs
+Desktop:
+
+![Desktop](https://github.com/pontikis/php_bs_grid/screenshots/desktop.png)
