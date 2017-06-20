@@ -16,5 +16,6 @@ var searchData=
   ['docs13_2dcriteria_2ddate_2emd',['docs13-Criteria-DATE.md',['../docs13-_criteria-_d_a_t_e_8md.html',1,'']]],
   ['docs14_2dcriteria_2dautocomplete_2emd',['docs14-Criteria-AUTOCOMPLETE.md',['../docs14-_criteria-_a_u_t_o_c_o_m_p_l_e_t_e_8md.html',1,'']]],
   ['docs15_2dcriteria_2dmultiselect_5fcheckbox_2emd',['docs15-Criteria-MULTISELECT_CHECKBOX.md',['../docs15-_criteria-_m_u_l_t_i_s_e_l_e_c_t___c_h_e_c_k_b_o_x_8md.html',1,'']]],
-  ['docs19_2dcriteria_2ddefine_2emd',['docs19-Criteria-Define.md',['../docs19-_criteria-_define_8md.html',1,'']]]
+  ['docs19_2dcriteria_2ddefine_2emd',['docs19-Criteria-Define.md',['../docs19-_criteria-_define_8md.html',1,'']]],
+  ['docs20_2dadvanced_2dsorting_2emd',['docs20-Advanced-Sorting.md',['../docs20-_advanced-_sorting_8md.html',1,'']]]
 ];

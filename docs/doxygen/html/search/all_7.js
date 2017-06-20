@@ -9,6 +9,7 @@ var searchData=
   ['php_5fbs_5fgrid_20parameters_3a_20criteria_20_2d_20autocomplete',['php_bs_grid parameters: Criteria - AUTOCOMPLETE',['../md__data_projects_php_php_bs_grid_docs_wiki-pages_docs14-Criteria-AUTOCOMPLETE.html',1,'']]],
   ['php_5fbs_5fgrid_20parameters_3a_20criteria_20_2d_20multiselect_5fcheckbox',['php_bs_grid parameters: Criteria - MULTISELECT_CHECKBOX',['../md__data_projects_php_php_bs_grid_docs_wiki-pages_docs15-Criteria-MULTISELECT_CHECKBOX.html',1,'']]],
   ['php_5fbs_5fgrid_20parameters_3a_20define_20criteria',['php_bs_grid parameters: Define Criteria',['../md__data_projects_php_php_bs_grid_docs_wiki-pages_docs19-Criteria-Define.html',1,'']]],
+  ['php_5fbs_5fgrid_20parameters_3a_20advanced_20sorting',['php_bs_grid parameters: Advanced Sorting',['../md__data_projects_php_php_bs_grid_docs_wiki-pages_docs20-Advanced-Sorting.html',1,'']]],
   ['php_5fbs_5fgrid',['php_bs_grid',['../classphp__bs__grid.html',1,'']]],
   ['php_5fbs_5fgrid_2eclass_2ephp',['php_bs_grid.class.php',['../php__bs__grid_8class_8php.html',1,'']]]
 ];
