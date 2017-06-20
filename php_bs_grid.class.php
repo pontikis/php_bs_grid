@@ -9,7 +9,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.4 (20 Jun 2017)
+ * @version    0.9.5 (XX Jun 2017)
  *
  */
 class php_bs_grid {
@@ -821,8 +821,10 @@ HTML1;
 				if(array_key_exists('excel_export_number_as_string', $column)) {
 					$excel_export_number_as_string = $column['excel_export_number_as_string'];
 				}
+				// always use UTF-8 for strings in PHPExcel (column header may contain html special chars)
+				$column_header = html_entity_decode($column['header'],ENT_QUOTES,'UTF-8');
 				array_push($a_excel_columns, array(
-					'header' => $column['header'],
+					'header' => $column_header,
 					'column_name' => $key,
 					'excel_export_number_as_string' => $excel_export_number_as_string
 				));
