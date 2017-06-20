@@ -1,10 +1,9 @@
 <?php
 session_start();
-if(isset($_SESSION['php_bs_grid_calendar'])) {
-	unset($_SESSION['php_bs_grid_calendar']);
+if(isset($_SESSION['php_bs_grid_example'])) {
+	unset($_SESSION['php_bs_grid_example']);
 }
-
 $a_vars = array();
-$a_vars['current_url'] = $section_urls['activities_archive'];
+$a_vars['current_url'] = $foo;
 
 echo json_encode($a_vars);

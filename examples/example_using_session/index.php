@@ -14,8 +14,6 @@ require_once '/path/to/PHPExcel.php';
  * php_bs_grid parameters ******************************************************
  */
 $dg_name = 'php_bs_grid_example';
-$dg_use_session_to_save_status = true;
-$dg_serialize_status = false;
 $a_dg_params = array();
 $ds = new dacapo($db_settings); // $db_settings see dacapo documentation
 $objPHPExcel = new PHPExcel();
@@ -774,17 +772,7 @@ if($res === false) {
 /*
  * Save status to $_SESSION ****************************************************
  */
-if($dg_use_session_to_save_status === true) {
-	$_SESSION[$dg->getName()] = $a_dg_params;
-}
-
-/*
- * Serialize status to make it available through a hidden input ****************
- */
-$dg_status = null;
-if($dg_serialize_status) {
-	$dg_status = base64_encode(serialize($a_dg_params));
-}
+$_SESSION[$dg->getName()] = $a_dg_params;
 
 /*
  * db data custom format (OPTIONAL) ********************************************

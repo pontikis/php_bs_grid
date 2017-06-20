@@ -1,18 +1,9 @@
 $(function() {
 
-    var data_to_pass = {},
-        dg_status = $("#dg_status").val();
-    if(dg_status) {
-        data_to_pass = {
-            "dg_status": dg_status
-        }
-    }
-
     // get vars
     $.ajax({
         url: "/url/to/ajax_get_vars.php",
         type: "POST",
-        data: data_to_pass,
         dataType: 'json',
         success: function(data) {
 

@@ -1,13 +1,7 @@
 <?php
 session_start();
 $a_vars = array();
-$a_dg_params = array();
-if(isset($_POST['dg_status']) && $_POST['dg_status']) {
-	$a_dg_params = unserialize(base64_decode($_POST['dg_status']));
-}
-if(isset($_SESSION['php_bs_grid_calendar'])) {
-	$a_dg_params = $_SESSION['php_bs_grid_calendar'];
-}
+$a_dg_params = $_SESSION['php_bs_grid_example'];
 $a_vars['addnew_record_url'] = $a_dg_params['dg_addnew_record_url'];
 $a_vars['criteria'] = $a_dg_params['dg_criteria'];
 $a_vars['ajax_validate_form_url'] = $a_dg_params['dg_ajax_validate_form_url'];
