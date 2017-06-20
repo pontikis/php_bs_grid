@@ -66,7 +66,7 @@ In ``examples/example_common`` folder find an example where a hidden field (``dg
 
 In ``examples/example_using_session`` folder find an example where ``$_SESSION`` is used to keep the status of ``php_bs_grid``. You can pass ``php_bs_grid`` parameters to javascript using an ajax call (``ajax_get_vars.php``). Moreover, you can return to recent status (filters, pagination etc) after returning to datagrid page from another page. This is the recommended use of `php_bs_grid``.
 
-Custom functions included in ``util_functions.php``. They have **nothing to do with** `php_bs_grid`` functionality. I quote them just for rerefrence. 
+Custom functions included in ``examples/common/util_functions.php``. They have **nothing to do with** `php_bs_grid`` functionality. I quote them just for rerefrence. 
 
 ## See it in action
 
