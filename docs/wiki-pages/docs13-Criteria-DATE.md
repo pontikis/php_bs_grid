@@ -36,11 +36,11 @@ $a_criteria_params_html_task_date_start_from = array(
 	'msg_missing_value' => 'Please, give the start date',
 	'show_time' => true,
 	'datepicker_params' => array(
-		'dateFormat' => $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['jq_date'],
+		'dateFormat' => 'd/m/yy',
 		'changeMonth' => true,
 		'changeYear' => true,
 		'showButtonPanel' => true,
-		'timeFormat' => $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['jq_time_short'],
+		'timeFormat' => 'HH:mm',
 		'stepMinute' => 5
 	)
 );
@@ -78,11 +78,11 @@ $a_criteria_params_html_task_date_start_until = array(
 	'msg_missing_value' => 'Please, give the end date',
 	'show_time' => true,
 	'datepicker_params' => array(
-		'dateFormat' => $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['jq_date'],
+		'dateFormat' => 'd/m/yy',
 		'changeMonth' => true,
 		'changeYear' => true,
 		'showButtonPanel' => true,
-		'timeFormat' => $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['jq_time_short'],
+		'timeFormat' => 'HH:mm',
 		'stepMinute' => 5
 	)
 );

@@ -23,18 +23,18 @@ $a_criteria_params_html_task_type = array(
 			'group_class' => 'checkbox',
 			'input_class' => '',
 			'input_id' => 'task_type_appointment',
-			'input_value' => $conf['calendar']['task_types']['appointment'],
+			'input_value' => 1,
 			'label_class' => $label_class,
-			'label' => $task_types[$conf['calendar']['task_types']['appointment']],
+			'label' => 'Appointment',
 			'default_checked_status' => true
 		),
 		array(
 			'group_class' => 'checkbox',
 			'input_class' => '',
 			'input_id' => 'task_type_task',
-			'input_value' => $conf['calendar']['task_types']['task'],
+			'input_value' => 2,
 			'label_class' => $label_class,
-			'label' => $task_types[$conf['calendar']['task_types']['task']],
+			'label' => 'Task',
 			'default_checked_status' => true
 		)
 	),
