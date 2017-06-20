@@ -844,6 +844,8 @@ if($dg->allowExportExcel()) {
             type="text/javascript"></script>
     <script src="/assets/jQuery-Timepicker-Addon_v1.6.3/jquery-ui-timepicker-addon.min.js"
             type="text/javascript"></script>
+    <script src="/assets/jquery-ui-extensions/ui-autocomplete/jquery.ui.autocomplete.html.min.js"
+            type="text/javascript"></script>
     <script src="/assets/php_bs_grid/jquery.php_bs_grid.js"
             type="text/javascript"></script>
     <script src="/path/to/index.js"
