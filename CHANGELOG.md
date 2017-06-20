@@ -10,7 +10,7 @@ Project page https://github.com/pontikis/php_bs_grid
 License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 
 
-Release 0.9.4 (19 June 2017)
+Release 0.9.4 (20 June 2017)
 --------------------------
 
 * documentation #20

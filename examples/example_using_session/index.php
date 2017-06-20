@@ -17,7 +17,7 @@ $dg_name = 'php_bs_grid_example';
 $dg_use_session_to_save_status = true;
 $dg_serialize_status = false;
 $a_dg_params = array();
-$ds = new dacapo($db_settings); // see dacapo documentation
+$ds = new dacapo($db_settings); // $db_settings see dacapo documentation
 $objPHPExcel = new PHPExcel();
 
 $dg_params_general = 'define';
@@ -61,7 +61,7 @@ if($dg_params_general == 'define') {
 		'reset_all' => 'Reset',
 		'columns_default' => 'Display more data',
 		'columns_more' => 'Display less data',
-		'addnew_record' => 'Add new contact',
+		'addnew_record' => '',
 		'advanced_sorting' => 'Advanced sorting',
 		'export_excel' => 'Export to Excel',
 		'first_page' => 'First',
@@ -87,7 +87,7 @@ if($dg_params_general == 'define') {
 } elseif($dg_params_general == 'pull_from_session') {
 	$a_dg_params['dg_name'] = $_SESSION[$dg_name]['dg_name'];
 	$a_dg_params['dg_form_action'] = $_SESSION[$dg_name]['dg_form_action'];
-	$a_dg_params['dg_ajax_validate_form_url'] =  $_SESSION[$dg_name]['dg_ajax_validate_form_url'];
+	$a_dg_params['dg_ajax_validate_form_url'] = $_SESSION[$dg_name]['dg_ajax_validate_form_url'];
 	$a_dg_params['dg_ajax_reset_all_url'] = $_SESSION[$dg_name]['dg_ajax_reset_all_url'];
 	$a_dg_params['dg_strings'] = $_SESSION[$dg_name]['dg_strings'];
 	$a_dg_params['dg_bs_modal_id'] = $_SESSION[$dg_name]['dg_bs_modal_id'];
@@ -201,11 +201,7 @@ if($dg_params_sql == 'define') {
 	$a_dg_params['dg_fixed_where'] = array(
 		'(task_type_id = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER . ' OR (task_type_id = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER . ' AND (users_id = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER . ' OR is_public = 1)))'
 	);
-	$a_dg_params['dg_fixed_bind_params'] = array(
-		$conf['calendar']['task_types']['appointment'],
-		$conf['calendar']['task_types']['task'],
-		$_SESSION['user_id']
-	);
+	$a_dg_params['dg_fixed_bind_params'] = array(1, 2, $_SESSION['user_id']);
 } elseif($dg_params_sql == 'pull_from_session') {
 	$a_dg_params['dg_columns'] = $_SESSION[$dg_name]['dg_columns'];
 	$a_dg_params['dg_select_count_column'] = $_SESSION[$dg_name]['dg_select_count_column'];
@@ -325,15 +321,10 @@ if($dg_params_criteria == 'define') {
 	$orientation = 'horizontal';
 	$label_class = 'checkbox-inline';
 
-	$a_task_types_valid = array(
-		$conf['calendar']['task_types']['appointment'],
-		$conf['calendar']['task_types']['task']
-	);
+	$a_task_types_valid = array(1, 2); // 1 = appointment 2 = task
 
-	$criteria_task_type = array(
-		$conf['calendar']['task_types']['appointment'],
-		$conf['calendar']['task_types']['task']
-	);
+	$criteria_task_type = array(1, 2);
+
 	if(isset($_POST['criteria_task_type'])) {
 		$valid = true;
 		foreach($_POST['criteria_task_type'] as $item) {
@@ -368,18 +359,18 @@ if($dg_params_criteria == 'define') {
 				'group_class' => 'checkbox',
 				'input_class' => '',
 				'input_id' => 'task_type_appointment',
-				'input_value' => $conf['calendar']['task_types']['appointment'],
+				'input_value' => 1,
 				'label_class' => $label_class,
-				'label' => $task_types[$conf['calendar']['task_types']['appointment']],
+				'label' => 'Appointment',
 				'default_checked_status' => true
 			),
 			array(
 				'group_class' => 'checkbox',
 				'input_class' => '',
 				'input_id' => 'task_type_task',
-				'input_value' => $conf['calendar']['task_types']['task'],
+				'input_value' => 2,
 				'label_class' => $label_class,
-				'label' => $task_types[$conf['calendar']['task_types']['task']],
+				'label' => 'Task',
 				'default_checked_status' => true
 			)
 		),
@@ -389,19 +380,8 @@ if($dg_params_criteria == 'define') {
 	// task_status
 	$orientation = 'vertical';
 	$label_class = '';
-	$a_task_status_valid = array(
-		$conf['calendar']['task_status']['pending'],
-		$conf['calendar']['task_status']['done'],
-		$conf['calendar']['task_status']['postponed'],
-		$conf['calendar']['task_status']['cancelled']
-	);
-
-	$criteria_task_status = array(
-		$conf['calendar']['task_status']['pending'],
-		$conf['calendar']['task_status']['done'],
-		$conf['calendar']['task_status']['postponed'],
-		$conf['calendar']['task_status']['cancelled']
-	);
+	$a_task_status_valid = array(1, 2, 3, 4); // 1 pending 2 done 3 postponed 4 cancelled
+	$criteria_task_status = array(1, 2, 3, 4);
 	if(isset($_POST['criteria_task_status'])) {
 		$valid = true;
 		foreach($_POST['criteria_task_status'] as $item) {
@@ -435,36 +415,36 @@ if($dg_params_criteria == 'define') {
 				'group_class' => 'checkbox',
 				'input_class' => '',
 				'input_id' => 'task_status_pending',
-				'input_value' => $conf['calendar']['task_status']['pending'],
+				'input_value' => 1,
 				'label_class' => $label_class,
-				'label' => $task_status[$conf['calendar']['task_status']['pending']],
+				'label' => 'pending',
 				'default_checked_status' => true
 			),
 			array(
 				'group_class' => 'checkbox',
 				'input_class' => '',
 				'input_id' => 'task_status_done',
-				'input_value' => $conf['calendar']['task_status']['done'],
+				'input_value' => 2,
 				'label_class' => 'checkbox-inline',
-				'label' => $task_status[$conf['calendar']['task_status']['done']],
+				'label' => 'done',
 				'default_checked_status' => true
 			),
 			array(
 				'group_class' => 'checkbox',
 				'input_class' => '',
 				'input_id' => 'task_status_postponed',
-				'input_value' => $conf['calendar']['task_status']['postponed'],
+				'input_value' => 3,
 				'label_class' => 'checkbox-inline',
-				'label' => $task_status[$conf['calendar']['task_status']['postponed']],
+				'label' => 'postponed',
 				'default_checked_status' => true
 			),
 			array(
 				'group_class' => 'checkbox',
 				'input_class' => '',
 				'input_id' => 'task_status_cancelled',
-				'input_value' => $conf['calendar']['task_status']['cancelled'],
+				'input_value' => 4,
 				'label_class' => 'checkbox-inline',
-				'label' => $task_status[$conf['calendar']['task_status']['cancelled']],
+				'label' => 'cancelled',
 				'default_checked_status' => true
 			)
 		),
@@ -650,11 +630,11 @@ if($dg_params_criteria == 'define') {
 		'msg_missing_value' => 'Please, give the start date',
 		'show_time' => true,
 		'datepicker_params' => array(
-			'dateFormat' => $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['jq_date'],
+			'dateFormat' => 'd/m/yy',
 			'changeMonth' => true,
 			'changeYear' => true,
 			'showButtonPanel' => true,
-			'timeFormat' => $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['jq_time_short'],
+			'timeFormat' => 'HH:mm',
 			'stepMinute' => 5
 		)
 	);
@@ -707,11 +687,11 @@ if($dg_params_criteria == 'define') {
 		'msg_missing_value' => 'Please, give the end date',
 		'show_time' => true,
 		'datepicker_params' => array(
-			'dateFormat' => $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['jq_date'],
+			'dateFormat' => 'd/m/yy',
 			'changeMonth' => true,
 			'changeYear' => true,
 			'showButtonPanel' => true,
-			'timeFormat' => $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['jq_time_short'],
+			'timeFormat' => 'HH:mm',
 			'stepMinute' => 5
 		)
 	);
@@ -722,22 +702,14 @@ if($dg_params_criteria == 'define') {
 			'type' => 'multiselect_checkbox',
 			'sql_column' => 'task_type_id',
 			'column_value' => $criteria_task_type,
-			'value_to_ignore' => array(
-				$conf['calendar']['task_types']['appointment'],
-				$conf['calendar']['task_types']['task']
-			),
+			'value_to_ignore' => array(1, 2),
 			'params_html' => $a_criteria_params_html_task_type
 		),
 		'task_status' => array(
 			'type' => 'multiselect_checkbox',
 			'sql_column' => 'status_id',
 			'column_value' => $criteria_task_status,
-			'value_to_ignore' => array(
-				$conf['calendar']['task_status']['pending'],
-				$conf['calendar']['task_status']['done'],
-				$conf['calendar']['task_status']['postponed'],
-				$conf['calendar']['task_status']['cancelled']
-			),
+			'value_to_ignore' => array(1, 2, 3, 4),
 			'params_html' => $a_criteria_params_html_task_status
 		),
 		'physician_id' => array(
