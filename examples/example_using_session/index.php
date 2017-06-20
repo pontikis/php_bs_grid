@@ -477,7 +477,7 @@ if($dg_params_criteria == 'define') {
 		'dropdown_lookup_id' => 'criteria_physician_id',
 		'dropdown_lookup_name' => 'criteria_physician_id',
 		'dropdown_lookup_class' => 'form-control',
-		'dropdown_lookup_options' => $medical_staff,
+		'dropdown_lookup_options' => $medical_staff, // define it somewhere (from database)
 		'dropdown_lookup_value' => $criteria_physician_id,
 	);
 
@@ -842,7 +842,7 @@ if($dg->allowExportExcel()) {
             type="text/javascript"></script>
     <script src="/assets/jquery-ui_v1.12.1/js/jquery-ui.min.js"
             type="text/javascript"></script>
-    <script src="/assets/jquery-ui-i18n/datepicker/datepicker-en.js"
+    <script src="/assets/jQuery-Timepicker-Addon_v1.6.3/jquery-ui-timepicker-addon.min.js"
             type="text/javascript"></script>
     <script src="/assets/php_bs_grid/jquery.php_bs_grid.js"
             type="text/javascript"></script>
