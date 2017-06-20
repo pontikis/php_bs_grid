@@ -37,7 +37,7 @@ Displays database data in table format.
 * PHPExcel is required for export https://github.com/PHPOffice/PHPExcel
 
 ### front-end
-* jquery https://jquery.com/ (tested with v3.1.1)
+* jquery https://jquery.com/ (tested with v3.2.1)
 * jquery-ui (datepicker, autocomplete) http://jqueryui.com/ (tested with v1.12.1)
 * jQuery UI Autocomplete HTML Extension http://github.com/scottgonzalez/jquery-ui-extensions (optional)
 * jQuery-Timepicker-Addon http://trentrichardson.com/examples/timepicker/ (tested with v1.6.3)
