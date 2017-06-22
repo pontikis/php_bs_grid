@@ -16,6 +16,7 @@ Displays database data in table format.
 * Advanced sorting
 * Filters 
     * text 
+    * number
     * lookup 
     * date 
     * autocomplete 
