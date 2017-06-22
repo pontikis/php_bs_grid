@@ -85,27 +85,6 @@
                     elem_criteria_before = $("#" + settings.criteria_before_id), // hidden
                     elem_criteria_after = $("#" + settings.criteria_after_id), // hidden
 
-                    // messages
-                    msg_criteria_not_changed = settings.msg_criteria_not_changed,
-                    msg_apply_or_reset_criteria = settings.msg_apply_or_reset_criteria,
-
-                    // php constants
-                    v_default_page_num = settings.default_page_num,
-                    v_columns_default = settings.columns_default,
-                    v_columns_more = settings.columns_more,
-                    v_export_excel_no = settings.export_excel_no,
-                    v_export_excel_yes = settings.export_excel_yes,
-
-                    v_criteria_operator_text_ignore = settings.criteria_operator_text_ignore,
-                    v_criteria_operator_text_isnull = settings.criteria_operator_text_isnull,
-
-                    v_criteria_operator_lookup_ignore = settings.criteria_operator_lookup_ignore,
-                    v_criteria_operator_lookup_equal = settings.criteria_operator_lookup_equal,
-
-                    v_criteria_operator_date_ignore = settings.criteria_operator_date_ignore,
-                    v_criteria_operator_date_equal = settings.criteria_operator_date_equal,
-                    v_criteria_operator_date_isnull = settings.criteria_operator_date_isnull,
-
                     // other vars
                     rows_per_page_before_change = elem_rows_per_page.val(),
                     criteria = settings.criteria,
@@ -142,6 +121,7 @@
                             a_criteria_ids.push("#" + criterion["params_html"]["dropdown_id"]);
                             a_criteria_ids.push("#" + criterion["params_html"]["dropdown_lookup_id"]);
                             break;
+                        case "number":
                         case "date":
                             a_criteria_ids.push("#" + criterion["params_html"]["dropdown_id"]);
                             a_criteria_ids.push("#" + criterion["params_html"]["input_id"]);
@@ -172,12 +152,12 @@
                                 case "text":
                                     elem_criteria = $("#" + criterion["params_html"]["input_id"]);
 
-                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_isnull) {
+                                    if(parseInt(elem_criteria_operator.val()) === settings.criteria_operator_text_isnull) {
                                         elem_criteria.val("");
                                         elem_criteria.hide();
                                     } else {
                                         elem_criteria.show();
-                                        if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_ignore) {
+                                        if(parseInt(elem_criteria_operator.val()) === settings.criteria_operator_text_ignore) {
                                             elem_criteria.val("");
                                         }
                                     }
@@ -185,10 +165,47 @@
                                 case "lookup":
                                     elem_criteria = $("#" + criterion["params_html"]["dropdown_lookup_id"]);
 
-                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_lookup_equal) {
+                                    if(parseInt(elem_criteria_operator.val()) === settings.criteria_operator_lookup_equal) {
                                         elem_criteria.show();
                                     } else {
                                         elem_criteria.hide();
+                                    }
+                                    break;
+                                case "number":
+                                    elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+                                    elem_criteria_wrapper = $("#" + criterion["params_html"]["wrapper_id"]);
+
+                                    if(elem_criteria_wrapper.is(":visible")) {
+                                        var associated_criteria = false;
+                                        if(criterion.params_html.hasOwnProperty("associated_criteria_name") && criterion["params_html"]["associated_criteria_name"]) {
+                                            associated_criteria = true;
+                                            var criterion_name_assoc = criterion["params_html"]["associated_criteria_name"],
+                                                assoc = criteria[criterion_name_assoc],
+                                                elem_criteria_wrapper_assoc = $("#" + assoc["params_html"]["wrapper_id"]),
+                                                elem_criteria_operator_assoc = $("#" + assoc["params_html"]["dropdown_id"]),
+                                                elem_criteria_assoc = $("#" + assoc["params_html"]["input_id"]);
+                                        }
+                                        var criteria_number_operator = parseInt(elem_criteria_operator.val());
+                                        if(criteria_number_operator === settings.criteria_operator_number_equal ||
+                                            criteria_number_operator === settings.criteria_operator_number_isnull) {
+                                            if(criteria_number_operator === settings.criteria_operator_number_isnull) {
+                                                elem_criteria.val("");
+                                                elem_criteria.hide();
+                                            }
+                                            if(associated_criteria) {
+                                                elem_criteria_operator_assoc.val(settings.criteria_operator_number_ignore);
+                                                elem_criteria_assoc.val("");
+                                                elem_criteria_wrapper_assoc.hide();
+                                            }
+                                        } else {
+                                            elem_criteria.show();
+                                            if(criteria_number_operator === settings.criteria_operator_number_ignore) {
+                                                elem_criteria.val("");
+                                            }
+                                            if(associated_criteria) {
+                                                elem_criteria_wrapper_assoc.show();
+                                            }
+                                        }
                                     }
                                     break;
                                 case "date":
@@ -206,20 +223,20 @@
                                                 elem_criteria_assoc = $("#" + assoc["params_html"]["input_id"]);
                                         }
                                         var criteria_date_operator = parseInt(elem_criteria_operator.val());
-                                        if(criteria_date_operator === v_criteria_operator_date_equal ||
-                                            criteria_date_operator === v_criteria_operator_date_isnull) {
-                                            if(criteria_date_operator === v_criteria_operator_date_isnull) {
+                                        if(criteria_date_operator === settings.criteria_operator_date_equal ||
+                                            criteria_date_operator === settings.criteria_operator_date_isnull) {
+                                            if(criteria_date_operator === settings.criteria_operator_date_isnull) {
                                                 elem_criteria.val("");
                                                 elem_criteria.hide();
                                             }
                                             if(associated_criteria) {
-                                                elem_criteria_operator_assoc.val(v_criteria_operator_date_ignore);
+                                                elem_criteria_operator_assoc.val(settings.criteria_operator_date_ignore);
                                                 elem_criteria_assoc.val("");
                                                 elem_criteria_wrapper_assoc.hide();
                                             }
                                         } else {
                                             elem_criteria.show();
-                                            if(criteria_date_operator === v_criteria_operator_date_ignore) {
+                                            if(criteria_date_operator === settings.criteria_operator_date_ignore) {
                                                 elem_criteria.val("");
                                             }
                                             if(associated_criteria) {
@@ -254,6 +271,7 @@
                                 elem_criteria.prop('selectedIndex', 0);
                             }
                             break;
+                        case "number":
                         case "date":
                             elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
                             elem_criteria = $("#" + criterion["params_html"]["input_id"]);
@@ -289,17 +307,23 @@
                             elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
                             elem_criteria = $("#" + criterion["params_html"]["input_id"]);
                             elem_criteria.val("");
-                            elem_criteria_operator.val(v_criteria_operator_text_ignore);
+                            elem_criteria_operator.val(settings.criteria_operator_text_ignore);
                             break;
                         case "lookup":
                             elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
-                            elem_criteria_operator.val(v_criteria_operator_lookup_ignore);
+                            elem_criteria_operator.val(settings.criteria_operator_lookup_ignore);
+                            break;
+                        case "number":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+                            elem_criteria.val("");
+                            elem_criteria_operator.val(settings.criteria_operator_number_ignore);
                             break;
                         case "date":
                             elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
                             elem_criteria = $("#" + criterion["params_html"]["input_id"]);
                             elem_criteria.val("");
-                            elem_criteria_operator.val(v_criteria_operator_date_ignore);
+                            elem_criteria_operator.val(settings.criteria_operator_date_ignore);
                             break;
                         case "autocomplete":
                             elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
@@ -324,7 +348,7 @@
                                 elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
                                 elem_criteria = $("#" + criterion["params_html"]["input_id"]);
 
-                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_isnull) {
+                                if(parseInt(elem_criteria_operator.val()) !== settings.criteria_operator_text_isnull) {
 
                                     elem_criteria.val($.trim(elem_criteria.val()));
 
@@ -333,17 +357,17 @@
                                     }
                                     validate_criteria_result.ajax_data_to_pass[criterion["params_html"]["input_id"]] = elem_criteria.val();
 
-                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_text_ignore && elem_criteria.val()) {
+                                    if(parseInt(elem_criteria_operator.val()) === settings.criteria_operator_text_ignore && elem_criteria.val()) {
                                         validate_criteria_result.error = criterion["params_html"]["msg_missing_operator"];
                                         validate_criteria_result.focus = criterion["params_html"]["dropdown_id"];
                                         return false;
                                     }
-                                    if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_ignore && !elem_criteria.val()) {
+                                    if(parseInt(elem_criteria_operator.val()) !== settings.criteria_operator_text_ignore && !elem_criteria.val()) {
                                         validate_criteria_result.error = criterion["params_html"]["msg_missing_value"];
                                         validate_criteria_result.focus = criterion["params_html"]["input_id"];
                                         return false;
                                     }
-                                    if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_text_ignore && elem_criteria.val()) {
+                                    if(parseInt(elem_criteria_operator.val()) !== settings.criteria_operator_text_ignore && elem_criteria.val()) {
                                         if(criterion.params_html.hasOwnProperty("minchars") && criterion["params_html"]["minchars"]) {
                                             if(elem_criteria.val().length < criterion["params_html"]["minchars"]) {
                                                 validate_criteria_result.error = criterion["params_html"]["msg_minchars"];
@@ -358,11 +382,11 @@
                             case "lookup":
 
                                 break;
-                            case "date":
+                            case "number":
                                 elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
                                 elem_criteria = $("#" + criterion["params_html"]["input_id"]);
 
-                                if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_isnull) {
+                                if(parseInt(elem_criteria_operator.val()) !== settings.criteria_operator_number_isnull) {
 
                                     elem_criteria.val($.trim(elem_criteria.val()));
 
@@ -373,12 +397,40 @@
                                     validate_criteria_result.ajax_data_to_pass[criterion["params_html"]["dropdown_id"]] = elem_criteria_operator.val();
                                     validate_criteria_result.ajax_data_to_pass[criterion["params_html"]["input_id"]] = elem_criteria.val();
 
-                                    if(parseInt(elem_criteria_operator.val()) === v_criteria_operator_date_ignore && elem_criteria.val()) {
+                                    if(parseInt(elem_criteria_operator.val()) === settings.criteria_operator_number_ignore && elem_criteria.val()) {
                                         validate_criteria_result.error = criterion["params_html"]["msg_missing_operator"];
                                         validate_criteria_result.focus = criterion["params_html"]["dropdown_id"];
                                         return false;
                                     }
-                                    if(parseInt(elem_criteria_operator.val()) !== v_criteria_operator_date_ignore && !elem_criteria.val()) {
+                                    if(parseInt(elem_criteria_operator.val()) !== settings.criteria_operator_number_ignore && !elem_criteria.val()) {
+                                        validate_criteria_result.error = criterion["params_html"]["msg_missing_value"];
+                                        validate_criteria_result.focus = criterion["params_html"]["input_id"];
+                                        return false;
+                                    }
+
+                                }
+                                break;
+                            case "date":
+                                elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                                elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+
+                                if(parseInt(elem_criteria_operator.val()) !== settings.criteria_operator_date_isnull) {
+
+                                    elem_criteria.val($.trim(elem_criteria.val()));
+
+                                    if(elem_criteria.val()) {
+                                        validate_criteria_result.text_inputs_contain_value = true;
+                                    }
+
+                                    validate_criteria_result.ajax_data_to_pass[criterion["params_html"]["dropdown_id"]] = elem_criteria_operator.val();
+                                    validate_criteria_result.ajax_data_to_pass[criterion["params_html"]["input_id"]] = elem_criteria.val();
+
+                                    if(parseInt(elem_criteria_operator.val()) === settings.criteria_operator_date_ignore && elem_criteria.val()) {
+                                        validate_criteria_result.error = criterion["params_html"]["msg_missing_operator"];
+                                        validate_criteria_result.focus = criterion["params_html"]["dropdown_id"];
+                                        return false;
+                                    }
+                                    if(parseInt(elem_criteria_operator.val()) !== settings.criteria_operator_date_ignore && !elem_criteria.val()) {
                                         validate_criteria_result.error = criterion["params_html"]["msg_missing_value"];
                                         validate_criteria_result.focus = criterion["params_html"]["input_id"];
                                         return false;
@@ -411,6 +463,7 @@
 
                 /* initialize criteria -------------------------------------- */
                 arrange_criteria("text");
+                arrange_criteria("number");
                 arrange_criteria("lookup");
                 arrange_criteria("date");
 
@@ -509,6 +562,22 @@
                                 }
                             });
                             break;
+                        case "number":
+                            elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
+                            elem_criteria = $("#" + criterion["params_html"]["input_id"]);
+
+                            elem_criteria_operator.change(function() {
+                                arrange_criteria("number");
+                            });
+
+                            elem_criteria.keypress(function(e) {
+                                // if the key pressed is the enter key
+                                if(e.which === 13) {
+                                    e.preventDefault();
+                                    elem_criteria_apply.click();
+                                }
+                            });
+                            break;
                         case "lookup":
                             elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
                             elem_criteria = $("#" + criterion["params_html"]["dropdown_lookup_id"]);
@@ -584,6 +653,7 @@
                         reset_criterion(criterion_name);
                     });
                     arrange_criteria("text");
+                    arrange_criteria("number");
                     arrange_criteria("lookup");
                     arrange_criteria("date");
                 });
@@ -616,9 +686,9 @@
                     });
 
                     if(action === "export_excel") {
-                        elem_export_excel.val(v_export_excel_yes);
+                        elem_export_excel.val(settings.export_excel_yes);
                     } else {
-                        elem_export_excel.val(v_export_excel_no);
+                        elem_export_excel.val(settings.export_excel_no);
                     }
 
                     // serialize criteria on post
@@ -687,6 +757,7 @@
                                 clear_criterion(criterion_name);
                             });
                             arrange_criteria("text");
+                            arrange_criteria("number");
                             arrange_criteria("lookup");
                             arrange_criteria("date");
 
@@ -704,13 +775,13 @@
                             } else {
                                 switch(action) {
                                     case "rows_per_page":
-                                        elem_page_num.val(v_default_page_num);
+                                        elem_page_num.val(settings.default_page_num);
                                         break;
                                     case "columns_switcher":
-                                        if(parseInt(elem_columns_to_display.val()) === v_columns_default) {
-                                            elem_columns_to_display.val(v_columns_more)
+                                        if(parseInt(elem_columns_to_display.val()) === settings.columns_default) {
+                                            elem_columns_to_display.val(settings.columns_more)
                                         } else {
-                                            elem_columns_to_display.val(v_columns_default)
+                                            elem_columns_to_display.val(settings.columns_default)
                                         }
                                         break;
                                     case "sort_simple":
@@ -730,7 +801,7 @@
                                         elem_sort_simple_order.val("");
                                         break;
                                     case "go_top":
-                                        elem_page_num.val(v_default_page_num);
+                                        elem_page_num.val(settings.default_page_num);
                                         break;
                                     case "go_back":
                                         elem_page_num.val(+elem_page_num.val() - 1);
@@ -829,6 +900,10 @@
 
                 criteria_operator_text_ignore: 1,
                 criteria_operator_text_isnull: 5,
+
+                criteria_operator_number_ignore: 1,
+                criteria_operator_number_equal: 2,
+                criteria_operator_number_isnull: 5,
 
                 criteria_operator_lookup_ignore: 1,
                 criteria_operator_lookup_equal: 2,

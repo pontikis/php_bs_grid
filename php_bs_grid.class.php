@@ -657,6 +657,82 @@ HTML1;
 	 * @param $criterion
 	 * @return string
 	 */
+	public function displayCriteriaNumber($criterion) {
+
+		$params = $this->a_criteria[$criterion]['params_html'];
+
+		// get data from params array
+		$wrapper_id = $params['wrapper_id'];
+		$wrapper_class = $params['wrapper_class'];
+
+		$label = $params['label'];
+		$label_id = $params['label_id'];
+		$label_class = $params['label_class'];
+
+		$dropdown_id = $params['dropdown_id'];
+		$dropdown_name = $params['dropdown_name'];
+		$dropdown_class = $params['dropdown_class'];
+		$dropdown_options = $params['dropdown_options'];
+		$dropdown_value = $params['dropdown_value'];
+
+		$input_id = $params['input_id'];
+		$input_name = $params['input_name'];
+		$input_class = $params['input_class'];
+		$maxlength = $params['maxlength'];
+		$autocomplete = $params['autocomplete'];
+		$placeholder = $params['placeholder'];
+		$input_value = $params['input_value'];
+
+		// some transformations
+		$wrapper_class_html = !$wrapper_class ? '' : ' class="' . $wrapper_class . '"';
+		$label_id_html = !$label_id ? '' : ' id="' . $label_id . '"';
+		$label_class_html = !$label_class ? '' : ' class="' . $label_class . '"';
+
+		$maxlength_html = !$maxlength ? '' : 'maxlength="' . $maxlength . '"';
+		$autocomplete_html = $autocomplete ? '' : 'autocomplete="off"';
+		$placeholder_html = !$placeholder ? '' : ' placeholder="' . $placeholder . '"';
+		$input_value = htmlspecialchars($input_value);
+
+		// create dropdown options html
+		$dropdown_options_html = '';
+		foreach($dropdown_options as $key => $item) {
+			$dropdown_options_html .=
+				'<option' . ($dropdown_value == $key ? ' selected' : '') . ' value="' . $key . '">' .
+				$item .
+				'</option>' . PHP_EOL;
+		}
+
+		$html1 = <<<HTML1
+<div id="{$wrapper_id}"{$wrapper_class_html}>
+
+	<label{$label_id_html}{$label_class_html} for="{$input_id}">{$label}</label>
+
+	<select id="{$dropdown_id}"
+			name="{$dropdown_name}"
+			class="{$dropdown_class}">
+			{$dropdown_options_html}
+	</select>
+
+	<input type="text"
+		   id="{$input_id}"
+		   name="{$input_name}"
+		   class="{$input_class}"
+		   {$maxlength_html}
+		   {$autocomplete_html}
+		   {$placeholder_html}
+		   value="{$input_value}">
+
+</div>
+HTML1;
+
+		return $html1;
+	}
+
+
+	/**
+	 * @param $criterion
+	 * @return string
+	 */
 	public function displayCriteriaAutocomplete($criterion) {
 
 		$params = $this->a_criteria[$criterion]['params_html'];
@@ -957,6 +1033,28 @@ HTML1;
 							array_push($bind_params, '%' . $criterion['column_value'] . '%');
 							break;
 						case C_PHP_BS_GRID_CRITERIA_TEXT_IS_NULL:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' IS NULL');
+							break;
+					}
+					break;
+
+				case 'number':
+					switch($criterion['sql_comparison_operator']) {
+						case C_PHP_BS_GRID_CRITERIA_NUMBER_IGNORE:
+							break;
+						case C_PHP_BS_GRID_CRITERIA_NUMBER_EQUAL:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+							array_push($bind_params, $criterion['column_value']);
+							break;
+						case C_PHP_BS_GRID_CRITERIA_NUMBER_GREATER_THAN_OR_EQUAL_TO:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' >= ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+							array_push($bind_params, $criterion['column_value']);
+							break;
+						case C_PHP_BS_GRID_CRITERIA_NUMBER_LESS_THAN_OR_EQUAL_TO:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' <= ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+							array_push($bind_params, $criterion['column_value']);
+							break;
+						case C_PHP_BS_GRID_CRITERIA_NUMBER_IS_NULL:
 							array_push($a_whereSQL, $criterion['sql_column'] . ' IS NULL');
 							break;
 					}
