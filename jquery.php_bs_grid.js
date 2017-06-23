@@ -903,14 +903,14 @@
 
                 criteria_operator_number_ignore: 1,
                 criteria_operator_number_equal: 2,
-                criteria_operator_number_isnull: 5,
+                criteria_operator_number_isnull: 7,
 
                 criteria_operator_lookup_ignore: 1,
                 criteria_operator_lookup_equal: 2,
 
                 criteria_operator_date_ignore: 1,
                 criteria_operator_date_equal: 2,
-                criteria_operator_date_isnull: 5
+                criteria_operator_date_isnull: 7
             };
         }
     };

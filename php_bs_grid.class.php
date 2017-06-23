@@ -1046,8 +1046,16 @@ HTML1;
 							array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
+						case C_PHP_BS_GRID_CRITERIA_NUMBER_GREATER_THAN:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' > ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+							array_push($bind_params, $criterion['column_value']);
+							break;
 						case C_PHP_BS_GRID_CRITERIA_NUMBER_GREATER_THAN_OR_EQUAL_TO:
 							array_push($a_whereSQL, $criterion['sql_column'] . ' >= ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+							array_push($bind_params, $criterion['column_value']);
+							break;
+						case C_PHP_BS_GRID_CRITERIA_NUMBER_LESS_THAN:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' < ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
 						case C_PHP_BS_GRID_CRITERIA_NUMBER_LESS_THAN_OR_EQUAL_TO:
@@ -1089,8 +1097,16 @@ HTML1;
 							array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
+						case C_PHP_BS_GRID_CRITERIA_DATE_GREATER_THAN:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' > ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+							array_push($bind_params, $criterion['column_value']);
+							break;
 						case C_PHP_BS_GRID_CRITERIA_DATE_GREATER_THAN_OR_EQUAL_TO:
 							array_push($a_whereSQL, $criterion['sql_column'] . ' >= ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+							array_push($bind_params, $criterion['column_value']);
+							break;
+						case C_PHP_BS_GRID_CRITERIA_DATE_LESS_THAN:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' < ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
 						case C_PHP_BS_GRID_CRITERIA_DATE_LESS_THAN_OR_EQUAL_TO:
