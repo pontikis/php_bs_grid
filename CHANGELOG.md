@@ -13,6 +13,7 @@ License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 Release 0.9.5 (XX June 2017)
 --------------------------
 
+* less or greater operators (date, number criteria) #24
 * Implement number criteria #2
 * use UTF-8 for column headers in PHPExcel (column header may contain html special chars) #21
 * documentation #20
