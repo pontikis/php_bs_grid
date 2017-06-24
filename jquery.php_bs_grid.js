@@ -912,6 +912,25 @@
                 criteria_operator_date_equal: 2,
                 criteria_operator_date_isnull: 7
             };
+        },
+
+        /**
+         * Display criterion (in case it is hidden)
+         * @example $(element).php_bs_grid('showCriterion', criterion_name);
+         * @param {String} str_criterion_name
+         */
+        showCriterion: function(str_criterion_name) {
+            var elem = this,
+                criteria = elem.data(pluginName)["criteria"],
+                elem_criterion_wrapper;
+            $.each(criteria, function(criterion_name, criterion) {
+                if(criterion_name === str_criterion_name) {
+                    elem_criterion_wrapper = $("#" + criterion["params_html"]["wrapper_id"]);
+                    return false;
+                }
+            });
+            elem_criterion_wrapper.show();
+            elem_criterion_wrapper.children().show();
         }
     };
 
