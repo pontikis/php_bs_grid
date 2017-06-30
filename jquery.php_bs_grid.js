@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.5 (XX Jun 2017)
+ * @version 0.9.5 (XX XXX 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
@@ -91,6 +91,8 @@
                     elem_criteria,
                     elem_criteria_operator,
                     elem_criteria_wrapper,
+                    elem_to_append,
+                    elem_to_prepend,
                     datepicker_params,
                     elem_criteria_autocomplete,
                     elem_criteria_filter,
@@ -146,6 +148,19 @@
 
                 var arrange_criteria = function(criteria_type) {
                     $.each(criteria, function(criterion_name, criterion) {
+
+                        // append prepend element
+                        if(criterion.params_html.hasOwnProperty("elem_id_to_append") && criterion["params_html"]["elem_id_to_append"]) {
+                            elem_criteria_wrapper = $("#" + criterion["params_html"]["wrapper_id"]);
+                            elem_to_append =  $("#" + criterion["params_html"]["elem_id_to_append"]);
+                            elem_criteria_wrapper.append(elem_to_append);
+                        }
+                        if(criterion.params_html.hasOwnProperty("elem_id_to_prepend") && criterion["params_html"]["elem_id_to_prepend"]) {
+                            elem_criteria_wrapper = $("#" + criterion["params_html"]["wrapper_id"]);
+                            elem_to_prepend =  $("#" + criterion["params_html"]["elem_id_to_prepend"]);
+                            elem_criteria_wrapper.prepend(elem_to_prepend);
+                        }
+
                         if(criterion.type === criteria_type) {
                             elem_criteria_operator = $("#" + criterion["params_html"]["dropdown_id"]);
                             switch(criteria_type) {
