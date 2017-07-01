@@ -1,7 +1,7 @@
 <?php
 
 /**
- * php_bs_grid class
+ * Class php_bs_grid
  *
  * php datagrid with jquery, jquery-ui and bootstrap frontend
  * https://github.com/pontikis/php_bs_grid
@@ -764,6 +764,19 @@ HTML1;
 		$filter_style = $params['filter_style'];
 		$filter_value = htmlspecialchars($params['filter_value']);
 
+		$display_is_null_option = $params['display_is_null_option'];
+		if($display_is_null_option == C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_DISPLAY_IS_NULL_YES) {
+			$is_null_wrapper_class = $params['is_null_wrapper_class'];
+			$is_null_class = $params['is_null_class'];
+			$is_null_style = $params['is_null_style'];
+			$is_null_label_id = $params['is_null_label_id'];
+			$is_null_label_class = $params['is_null_label_class'];
+			$is_null_label = $params['is_null_label'];
+			$is_null_id = $params['is_null_id'];
+			$is_null_name = $params['is_null_name'];
+			$is_null_checked = $params['is_null_checked'];
+		}
+
 		// some transformations
 		$wrapper_class_html = !$wrapper_class ? '' : ' class="' . $wrapper_class . '"';
 		$autocomplete_label_id_html = !$autocomplete_label_id ? '' : ' id="' . $autocomplete_label_id . '"';
@@ -773,8 +786,14 @@ HTML1;
 		$filter_label_id_html = !$filter_label_id ? '' : ' id="' . $filter_label_id . '"';
 		$filter_label_class_html = !$filter_label_class ? '' : ' class="' . $filter_label_class . '"';
 		$filter_style_html = !$filter_style ? '' : ' style="' . $filter_style . '"';
+		if($display_is_null_option == C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_DISPLAY_IS_NULL_YES) {
+			$is_null_label_id_html = !$is_null_label_id ? '' : ' id="' . $is_null_label_id . '"';
+			$is_null_label_class_html = !$is_null_label_class ? '' : ' class="' . $is_null_label_class . '"';
+			$is_null_style_html = !$is_null_style ? '' : ' style="' . $is_null_style . '"';
+		}
 
-		$html1 = <<<HTML1
+		if($display_is_null_option == C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_DISPLAY_IS_NULL_YES) {
+			$html1 = <<<HTML1
 <div id="{$wrapper_id}"{$wrapper_class_html}>
 
 	<div class="{$autocomplete_wrapper_class}">
@@ -807,8 +826,56 @@ HTML1;
 		
 	</div>
 	
+	<div class="{$is_null_wrapper_class}">
+		
+		<div class="{$is_null_class}"{$is_null_style_html}>
+  			<label{$is_null_label_id_html}{$is_null_label_class_html}>
+    			<input type="checkbox" name="{$is_null_name}" id="{$is_null_id}"{$is_null_checked}>
+			    {$is_null_label}
+  			</label>
+		</div>
+
+	</div>
+
 </div>
 HTML1;
+		} else {
+			$html1 = <<<HTML1
+<div id="{$wrapper_id}"{$wrapper_class_html}>
+
+	<div class="{$autocomplete_wrapper_class}">
+	
+		<div class="{$autocomplete_group_wrapper_class}">
+			<label{$autocomplete_label_id_html}{$autocomplete_label_class_html} for="{$autocomplete_id}">{$autocomplete_label}</label>
+			<input type="text"
+				   id="{$autocomplete_id}"
+				   name="{$autocomplete_name}"
+				   class="{$autocomplete_class}"
+				   {$autocomplete_style_html}
+				   {$autocomplete_placeholder_html}
+				   value="{$autocomplete_value}">
+		</div>
+	
+	</div>
+	
+	<div class="{$filter_wrapper_class}">
+	
+		<div class="{$filter_group_wrapper_class}">
+			<label{$filter_label_id_html}{$filter_label_class_html} for="{$filter_id}">{$filter_label}</label>
+			<input type="text"
+				   id="{$filter_id}"
+				   name="{$filter_name}"
+				   class="{$filter_class}"
+				   {$filter_style_html}
+				   value="{$filter_value}"
+				   readonly="readonly">
+		</div>
+		
+	</div>
+
+</div>
+HTML1;
+		}
 
 		return $html1;
 	}
@@ -1087,9 +1154,16 @@ HTML1;
 					break;
 
 				case 'autocomplete':
-					if($criterion['column_value']) {
-						array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
-						array_push($bind_params, $criterion['column_value']);
+					switch($criterion['sql_comparison_operator']) {
+						case C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_EQUAL:
+							if($criterion['column_value']) {
+								array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+								array_push($bind_params, $criterion['column_value']);
+							}
+							break;
+						case C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_IS_NULL:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' IS NULL');
+							break;
 					}
 					break;
 

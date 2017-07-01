@@ -97,6 +97,7 @@
                     elem_criteria_autocomplete,
                     elem_criteria_filter,
                     autocomplete_params,
+                    elem_is_null,
                     elem_checkbox,
 
                     a_criteria_ids = [],
@@ -131,6 +132,9 @@
                         case "autocomplete":
                             a_criteria_ids.push("#" + criterion["params_html"]["autocomplete_id"]);
                             a_criteria_ids.push("#" + criterion["params_html"]["filter_id"]);
+                            if(criterion.params_html.hasOwnProperty("is_null_id") && criterion["params_html"]["is_null_id"]) {
+                                a_criteria_ids.push("#" + criterion["params_html"]["is_null_id"]);
+                            }
                             break;
                         case "multiselect_checkbox":
                             $.each(criterion["params_html"]["items"], function(i, item) {
@@ -152,12 +156,12 @@
                         // append prepend element
                         if(criterion.params_html.hasOwnProperty("elem_id_to_append") && criterion["params_html"]["elem_id_to_append"]) {
                             elem_criteria_wrapper = $("#" + criterion["params_html"]["wrapper_id"]);
-                            elem_to_append =  $("#" + criterion["params_html"]["elem_id_to_append"]);
+                            elem_to_append = $("#" + criterion["params_html"]["elem_id_to_append"]);
                             elem_criteria_wrapper.append(elem_to_append);
                         }
                         if(criterion.params_html.hasOwnProperty("elem_id_to_prepend") && criterion["params_html"]["elem_id_to_prepend"]) {
                             elem_criteria_wrapper = $("#" + criterion["params_html"]["wrapper_id"]);
-                            elem_to_prepend =  $("#" + criterion["params_html"]["elem_id_to_prepend"]);
+                            elem_to_prepend = $("#" + criterion["params_html"]["elem_id_to_prepend"]);
                             elem_criteria_wrapper.prepend(elem_to_prepend);
                         }
 
@@ -261,6 +265,20 @@
                                         }
                                     }
                                     break;
+                                case "autocomplete":
+                                    if(criterion["params_html"]["display_is_null_option"] === settings.autocomplete_display_is_null_yes) {
+                                        elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
+                                        elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
+                                        elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
+                                        if (elem_is_null.is(':checked')) {
+                                            elem_criteria_filter.val("");
+                                            elem_criteria_autocomplete.val("");
+                                            elem_criteria_autocomplete.prop("disabled", true);
+                                        } else {
+                                            elem_criteria_autocomplete.prop("disabled", false);
+                                        }
+                                    }
+                                    break;
                             }
                         }
                     });
@@ -301,6 +319,16 @@
 
                             elem_criteria_filter.val(criterion["params_html"]["filter_value"]);
                             elem_criteria_autocomplete.val(criterion["params_html"]["autocomplete_value"]);
+
+                            if(criterion["params_html"]["display_is_null_option"] === settings.autocomplete_display_is_null_yes) {
+                                elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
+                                if(criterion["params_html"]["is_null_checked"]) {
+                                    elem_is_null.prop('checked', true);
+                                } else {
+                                    elem_is_null.prop('checked', false);
+                                }
+                            }
+                            arrange_criteria("autocomplete");
                             break;
                         case "multiselect_checkbox":
                             $.each(criterion["params_html"]["items"], function(index, item) {
@@ -346,6 +374,10 @@
                             elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
                             elem_criteria_filter.val("");
                             elem_criteria_autocomplete.val("");
+                            if(criterion["params_html"]["display_is_null_option"] === settings.autocomplete_display_is_null_yes) {
+                                elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
+                                elem_is_null.prop('checked', false);
+                            }
                             break;
                         case "multiselect_checkbox":
                             $.each(criterion["params_html"]["items"], function(i, item) {
@@ -482,6 +514,7 @@
                 arrange_criteria("number");
                 arrange_criteria("lookup");
                 arrange_criteria("date");
+                arrange_criteria("autocomplete");
 
                 /* reset all button ----------------------------------------- */
                 elem_reset_all.click(function() {
@@ -626,8 +659,9 @@
                             });
                             break;
                         case "autocomplete":
-                            elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
                             elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
+                            elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
+
                             autocomplete_params = criterion["params_html"]["autocomplete_params"];
                             // set value to filter field (id) after selection from the list
                             autocomplete_params.select = function(event, ui) {
@@ -651,6 +685,19 @@
                             elem_criteria_autocomplete.on('open', function() {
                                 $(".ui-autocomplete").css("width", elem_criteria_autocomplete.css("width"));
                             });
+
+                            if(criterion["params_html"]["display_is_null_option"] === settings.autocomplete_display_is_null_yes) {
+                                elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
+                                elem_is_null.click(function() {
+                                    if (elem_is_null.is(':checked')) {
+                                        elem_criteria_autocomplete.val("");
+                                        elem_criteria_filter.val('');
+                                        elem_criteria_autocomplete.prop("disabled", true);
+                                    } else {
+                                        elem_criteria_autocomplete.prop("disabled", false);
+                                    }
+                                });
+                            }
                             break;
                         case "multiselect_checkbox":
                             break;
@@ -672,6 +719,7 @@
                     arrange_criteria("number");
                     arrange_criteria("lookup");
                     arrange_criteria("date");
+                    arrange_criteria("autocomplete");
                 });
 
                 /* clear criteria ------------------------------------------- */
@@ -776,6 +824,7 @@
                             arrange_criteria("number");
                             arrange_criteria("lookup");
                             arrange_criteria("date");
+                            arrange_criteria("autocomplete");
 
                             // serialize criteria on post (after clear)
                             criteria_on_post = elem_criteria_multiple_selector.serialize();
@@ -913,6 +962,8 @@
                 columns_more: 2,
                 export_excel_no: 1,
                 export_excel_yes: 2,
+
+                autocomplete_display_is_null_yes: 1,
 
                 criteria_operator_text_ignore: 1,
                 criteria_operator_text_isnull: 5,

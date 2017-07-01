@@ -13,6 +13,7 @@ License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 Release 0.9.5 (XX July 2017)
 --------------------------
 
+* add operators to autocomplete (equal, not given) #23
 * add not equal operator to lookup filters #27
 * ability to append/prepend element in filters #26
 * added ``showCriterion`` method
