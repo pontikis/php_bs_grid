@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.5 (XX XXX 2017)
+ * @version 0.9.5 (XX Jul 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
@@ -180,10 +180,11 @@
                                 case "lookup":
                                     elem_criteria = $("#" + criterion["params_html"]["dropdown_lookup_id"]);
 
-                                    if(parseInt(elem_criteria_operator.val()) === settings.criteria_operator_lookup_equal) {
-                                        elem_criteria.show();
-                                    } else {
+                                    if(parseInt(elem_criteria_operator.val()) === settings.criteria_operator_lookup_ignore ||
+                                        parseInt(elem_criteria_operator.val()) === settings.criteria_operator_lookup_isnull) {
                                         elem_criteria.hide();
+                                    } else {
+                                        elem_criteria.show();
                                     }
                                     break;
                                 case "number":
@@ -921,7 +922,7 @@
                 criteria_operator_number_isnull: 7,
 
                 criteria_operator_lookup_ignore: 1,
-                criteria_operator_lookup_equal: 2,
+                criteria_operator_lookup_isnull: 4,
 
                 criteria_operator_date_ignore: 1,
                 criteria_operator_date_equal: 2,

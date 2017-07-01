@@ -9,7 +9,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.5 (XX XXX 2017)
+ * @version    0.9.5 (XX Jul 2017)
  *
  */
 class php_bs_grid {
@@ -1074,6 +1074,10 @@ HTML1;
 							break;
 						case C_PHP_BS_GRID_CRITERIA_LOOKUP_EQUAL:
 							array_push($a_whereSQL, $criterion['sql_column'] . ' = ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
+							array_push($bind_params, $criterion['column_value']);
+							break;
+						case C_PHP_BS_GRID_CRITERIA_LOOKUP_NOT_EQUAL:
+							array_push($a_whereSQL, $criterion['sql_column'] . ' <> ' . C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER);
 							array_push($bind_params, $criterion['column_value']);
 							break;
 						case C_PHP_BS_GRID_CRITERIA_LOOKUP_IS_NULL:

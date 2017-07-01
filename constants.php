@@ -29,7 +29,8 @@ define('C_PHP_BS_GRID_CRITERIA_TEXT_IS_NULL', 5);
 // lookup criteria operators
 define('C_PHP_BS_GRID_CRITERIA_LOOKUP_IGNORE', 1);
 define('C_PHP_BS_GRID_CRITERIA_LOOKUP_EQUAL', 2);
-define('C_PHP_BS_GRID_CRITERIA_LOOKUP_IS_NULL', 3);
+define('C_PHP_BS_GRID_CRITERIA_LOOKUP_NOT_EQUAL', 3);
+define('C_PHP_BS_GRID_CRITERIA_LOOKUP_IS_NULL', 4);
 
 // number criteria operators
 define('C_PHP_BS_GRID_CRITERIA_NUMBER_IGNORE', 1);
