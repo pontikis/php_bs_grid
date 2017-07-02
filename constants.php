@@ -8,7 +8,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.5 (XX Jul 2017)
+ * @version    0.9.5 (02 Jul 2017)
  *
  */
 
@@ -65,6 +65,13 @@ define('C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_IS_NULL', 2);
 
 define('C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_DISPLAY_IS_NULL_YES', 1);
 define('C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_DISPLAY_IS_NULL_NO', 2);
+
+// autocomplete criteria operators
+define('C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_ONE_OR_MORE_OF', 1);
+define('C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_IS_NULL', 2);
+
+define('C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_DISPLAY_IS_NULL_YES', 1);
+define('C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_DISPLAY_IS_NULL_NO', 2);
 
 // misc
 define('C_PHP_BS_GRID_DACAPO_SQL_PLACEHOLDER', '?');

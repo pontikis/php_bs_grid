@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.5 (XX Jul 2017)
+ * @version 0.9.5 (02 Jul 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
@@ -140,6 +140,9 @@
                             $.each(criterion["params_html"]["items"], function(i, item) {
                                 a_criteria_ids.push('#' + item["input_id"]);
                             });
+                            if(criterion.params_html.hasOwnProperty("is_null_id") && criterion["params_html"]["is_null_id"]) {
+                                a_criteria_ids.push("#" + criterion["params_html"]["is_null_id"]);
+                            }
                             break;
                     }
                 });
@@ -279,6 +282,23 @@
                                         }
                                     }
                                     break;
+                                case "multiselect_checkbox":
+                                    if(criterion["params_html"]["display_is_null_option"] === settings.multiselect_checkbox_display_is_null_yes) {
+                                        elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
+                                        if (elem_is_null.is(':checked')) {
+                                            $.each(criterion["params_html"]["items"], function(i, item) {
+                                                elem_checkbox = $('#' + item["input_id"]);
+                                                elem_checkbox.prop('checked', item.default_checked_status);
+                                                elem_checkbox.prop('disabled', true);
+                                            });
+                                        } else {
+                                            $.each(criterion["params_html"]["items"], function(i, item) {
+                                                elem_checkbox = $('#' + item["input_id"]);
+                                                elem_checkbox.prop('disabled', false);
+                                            });
+                                        }
+                                    }
+                                    break;
                             }
                         }
                     });
@@ -339,6 +359,16 @@
                                     elem_checkbox.prop('checked', false);
                                 }
                             });
+
+                            if(criterion["params_html"]["display_is_null_option"] === settings.multiselect_checkbox_display_is_null_yes) {
+                                elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
+                                if(criterion["params_html"]["is_null_checked"]) {
+                                    elem_is_null.prop('checked', true);
+                                } else {
+                                    elem_is_null.prop('checked', false);
+                                }
+                            }
+                            arrange_criteria("multiselect_checkbox");
                             break;
                     }
 
@@ -383,6 +413,10 @@
                             $.each(criterion["params_html"]["items"], function(i, item) {
                                 $('#' + item["input_id"]).prop('checked', item.default_checked_status);
                             });
+                            if(criterion["params_html"]["display_is_null_option"] === settings.multiselect_checkbox_display_is_null_yes) {
+                                elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
+                                elem_is_null.prop('checked', false);
+                            }
                             break;
                     }
                 };
@@ -508,13 +542,17 @@
 
                 };
 
+                var arrange_criteria_all = function() {
+                    arrange_criteria("text");
+                    arrange_criteria("number");
+                    arrange_criteria("lookup");
+                    arrange_criteria("date");
+                    arrange_criteria("autocomplete");
+                    arrange_criteria("multiselect_checkbox");
+                };
 
                 /* initialize criteria -------------------------------------- */
-                arrange_criteria("text");
-                arrange_criteria("number");
-                arrange_criteria("lookup");
-                arrange_criteria("date");
-                arrange_criteria("autocomplete");
+                arrange_criteria_all();
 
                 /* reset all button ----------------------------------------- */
                 elem_reset_all.click(function() {
@@ -700,6 +738,23 @@
                             }
                             break;
                         case "multiselect_checkbox":
+                            if(criterion["params_html"]["display_is_null_option"] === settings.multiselect_checkbox_display_is_null_yes) {
+                                elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
+                                elem_is_null.click(function() {
+                                    if (elem_is_null.is(':checked')) {
+                                        $.each(criterion["params_html"]["items"], function(i, item) {
+                                            elem_checkbox = $('#' + item["input_id"]);
+                                            elem_checkbox.prop('checked', item.default_checked_status);
+                                            elem_checkbox.prop('disabled', true);
+                                        });
+                                    } else {
+                                        $.each(criterion["params_html"]["items"], function(i, item) {
+                                            elem_checkbox = $('#' + item["input_id"]);
+                                            elem_checkbox.prop('disabled', false);
+                                        });
+                                    }
+                                });
+                            }
                             break;
                     }
                 });
@@ -715,11 +770,7 @@
                     $.each(criteria, function(criterion_name, criterion) {
                         reset_criterion(criterion_name);
                     });
-                    arrange_criteria("text");
-                    arrange_criteria("number");
-                    arrange_criteria("lookup");
-                    arrange_criteria("date");
-                    arrange_criteria("autocomplete");
+                    arrange_criteria_all();
                 });
 
                 /* clear criteria ------------------------------------------- */
@@ -820,11 +871,7 @@
                             $.each(criteria, function(criterion_name, criterion) {
                                 clear_criterion(criterion_name);
                             });
-                            arrange_criteria("text");
-                            arrange_criteria("number");
-                            arrange_criteria("lookup");
-                            arrange_criteria("date");
-                            arrange_criteria("autocomplete");
+                            arrange_criteria_all();
 
                             // serialize criteria on post (after clear)
                             criteria_on_post = elem_criteria_multiple_selector.serialize();
@@ -963,8 +1010,6 @@
                 export_excel_no: 1,
                 export_excel_yes: 2,
 
-                autocomplete_display_is_null_yes: 1,
-
                 criteria_operator_text_ignore: 1,
                 criteria_operator_text_isnull: 5,
 
@@ -977,7 +1022,10 @@
 
                 criteria_operator_date_ignore: 1,
                 criteria_operator_date_equal: 2,
-                criteria_operator_date_isnull: 7
+                criteria_operator_date_isnull: 7,
+
+                autocomplete_display_is_null_yes: 1,
+                multiselect_checkbox_display_is_null_yes: 1,
             };
         },
 
