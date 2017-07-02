@@ -6,6 +6,7 @@ $a_dg_params['dg_criteria'] = array(
 		'type' => 'multiselect_checkbox',
 		'sql_column' => 'task_type_id',
 		'column_value' => $criteria_task_type,
+		'sql_comparison_operator' => $criteria_operator_task_type,
 		'value_to_ignore' => array(1, 2); // 1 = appointment 2 = task
 		'params_html' => $a_criteria_params_html_task_type
 	),
@@ -13,6 +14,7 @@ $a_dg_params['dg_criteria'] = array(
 		'type' => 'multiselect_checkbox',
 		'sql_column' => 'status_id',
 		'column_value' => $criteria_task_status,
+		'sql_comparison_operator' => $criteria_operator_task_status,
 		'value_to_ignore' => array(1, 2, 3, 4), // 1 pending 2 done 3 postponed 4 cancelled
 		'params_html' => $a_criteria_params_html_task_status
 	),
@@ -27,6 +29,7 @@ $a_dg_params['dg_criteria'] = array(
 		'type' => 'autocomplete',
 		'sql_column' => 'patients_id',
 		'column_value' => $criteria_patients_id,
+		'sql_comparison_operator' => $criteria_operator_patients_id,
 		'params_html' => $a_criteria_params_html_patients_id
 	),
 	'description' => array(

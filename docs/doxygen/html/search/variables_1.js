@@ -39,8 +39,5 @@ var searchData=
   ['c_5fphp_5fbs_5fgrid_5fexport_5fexcel_5fno',['C_PHP_BS_GRID_EXPORT_EXCEL_NO',['../constants_8php.html#a97cec32826feb7d015151e451a8b5c78',1,'constants.php']]],
   ['c_5fphp_5fbs_5fgrid_5fexport_5fexcel_5fyes',['C_PHP_BS_GRID_EXPORT_EXCEL_YES',['../constants_8php.html#a47d4fe4f0d48feb7cd92f0b728114280',1,'constants.php']]],
   ['c_5fphp_5fbs_5fgrid_5fshort_5fadvanced_5fdefault',['C_PHP_BS_GRID_SHORT_ADVANCED_DEFAULT',['../constants_8php.html#a07cc100c1218268ab525bed1491c96e9',1,'constants.php']]],
-  ['c_5fphp_5fbs_5fgrid_5fshort_5fadvanced_5fignore',['C_PHP_BS_GRID_SHORT_ADVANCED_IGNORE',['../constants_8php.html#a7246509e18732cf81f1207c295cc14dc',1,'constants.php']]],
-  ['changelog_2emd',['CHANGELOG.md',['../_c_h_a_n_g_e_l_o_g_8md.html',1,'']]],
-  ['constants_2ephp',['constants.php',['../constants_8php.html',1,'']]],
-  ['changelog',['CHANGELOG',['../md__data_projects_php_php_bs_grid_CHANGELOG.html',1,'']]]
+  ['c_5fphp_5fbs_5fgrid_5fshort_5fadvanced_5fignore',['C_PHP_BS_GRID_SHORT_ADVANCED_IGNORE',['../constants_8php.html#a7246509e18732cf81f1207c295cc14dc',1,'constants.php']]]
 ];
