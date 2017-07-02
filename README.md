@@ -42,6 +42,7 @@ Displays database data in table format.
 * jquery-ui (datepicker, autocomplete) http://jqueryui.com/ (tested with v1.12.1)
 * jQuery UI Autocomplete HTML Extension http://github.com/scottgonzalez/jquery-ui-extensions (optional)
 * jQuery-Timepicker-Addon http://trentrichardson.com/examples/timepicker/ (tested with v1.6.3)
+* jQuery UI Touch Punch http://touchpunch.furf.com/ tested with v0.2.3 (optional)
 * twitter bootstrap http://getbootstrap.com/ (tested with v3.3.7)
 
 ## Files
