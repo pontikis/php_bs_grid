@@ -96,17 +96,20 @@
 					<div class="col-xs-12"
 						 style="margin-bottom: 10px;">
 
-						<button type="button"
-								id="criteria_apply"
-								class="btn btn-default"><?php print $dg->getString('apply_criteria') ?></button>
+                        <button type="button"
+                                id="criteria_apply"
+                                class="btn btn-default"
+                                style="margin-top: 5px; margin-right: 5px;"><?php print $dg->getString('apply_criteria') ?></button>
 
-						<button type="button"
-								id="criteria_reset"
-								class="btn btn-default"><?php print $dg->getString('reset_criteria') ?></button>
+                        <button type="button"
+                                id="criteria_reset"
+                                class="btn btn-default"
+                                style="margin-top: 5px; margin-right: 5px;"><?php print $dg->getString('reset_criteria') ?></button>
 
-						<button type="button"
-								id="criteria_clear"
-								class="btn btn-default"><?php print $dg->getString('clear_criteria') ?></button>
+                        <button type="button"
+                                id="criteria_clear"
+                                class="btn btn-default"
+                                style="margin-top: 5px; margin-right: 5px;"><?php print $dg->getString('clear_criteria') ?></button>
 
 					</div>
 
