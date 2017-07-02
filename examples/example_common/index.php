@@ -285,10 +285,27 @@ $a_criteria_params_html_task_type = array(
 			'default_checked_status' => true
 		)
 	),
+
+	'display_is_null_option' => C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_DISPLAY_IS_NULL_YES,
+	'is_null_class' => 'checkbox',
+	'is_null_style' => '',
+	'is_null_label_id' => '',
+	'is_null_label_class' => '',
+	'is_null_label' => 'not given',
+	'is_null_id' => 'criteria_task_type_isnull',
+	'is_null_name' => 'criteria_task_type_isnull',
+	'is_null_checked' => $criteria_isnull_checked_task_type,
+
 	'msg_all_deselected' => 'Please, select at least one option of filter type'
 );
 
 // task_status
+$criteria_operator_task_status = C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_ONE_OR_MORE_OF;
+$criteria_isnull_checked_task_status = '';
+if(isset($_POST['criteria_task_status_isnull'])) {
+	$criteria_operator_task_status = C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_IS_NULL;
+	$criteria_isnull_checked_task_status = ' checked';
+}
 $orientation = 'vertical';
 $label_class = '';
 $a_task_status_valid = array(1, 2, 3, 4); // 1 pending 2 done 3 postponed 4 cancelled
@@ -359,6 +376,9 @@ $a_criteria_params_html_task_status = array(
 			'default_checked_status' => true
 		)
 	),
+
+	'display_is_null_option' => C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_DISPLAY_IS_NULL_NO,
+
 	'msg_all_deselected' => 'Please, select at least one option of filter status'
 );
 
@@ -395,6 +415,12 @@ $a_criteria_params_html_physician_id = array(
 );
 
 // patients_id
+$criteria_operator_patients_id = C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_EQUAL;
+$criteria_isnull_checked_patients_id = '';
+if(isset($_POST['criteria_patients_id_isnull'])) {
+	$criteria_operator_patients_id = C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_IS_NULL;
+	$criteria_isnull_checked_patients_id = ' checked';
+}
 $criteria_patients_id = null;
 if(isset($_POST['criteria_patients_id'])) {
 	if(is_positive_integer($_POST['criteria_patients_id'])) {
@@ -421,6 +447,13 @@ $a_criteria_params_html_patients_id = array(
 	'autocomplete_placeholder' => 'a few letters from the patient\'s name',
 	'autocomplete_value' => $criteria_patients_fullname,
 
+	'autocomplete_params' => array(
+		'source' => '/url/to/ajax_patient_autocomplete.php',
+		'minLength' => 2,
+		'delay' => 500,
+		'html' => true
+	),
+
 	'filter_wrapper_class' => 'col-xs-12 col-sm-12 col-md-3 col-lg-3',
 	'filter_group_wrapper_class' => 'form-group',
 	'filter_label_id' => 'criteria_patients_id_label',
@@ -432,12 +465,16 @@ $a_criteria_params_html_patients_id = array(
 	'filter_style' => 'width: 100px;',
 	'filter_value' => $criteria_patients_id,
 
-	'autocomplete_params' => array(
-		'source' => '/url/to/ajax_patient_autocomplete.php',
-		'minLength' => 2,
-		'delay' => 500,
-		'html' => true
-	)
+	'display_is_null_option' => C_PHP_BS_GRID_CRITERIA_AUTOCOMPLETE_DISPLAY_IS_NULL_YES,
+	'is_null_wrapper_class' => 'col-xs-12 col-sm-12 col-md-3 col-lg-3',
+	'is_null_class' => 'checkbox',
+	'is_null_style' => '',
+	'is_null_label_id' => '',
+	'is_null_label_class' => '',
+	'is_null_label' => 'not given',
+	'is_null_id' => 'criteria_patients_id_isnull',
+	'is_null_name' => 'criteria_patients_id_isnull',
+	'is_null_checked' => $criteria_isnull_checked_patients_id
 );
 
 // description
@@ -495,19 +532,21 @@ $a_criteria_params_html_description = array(
 $a_criteria_operators_task_date_start_from = array(
 	C_PHP_BS_GRID_CRITERIA_DATE_IGNORE => 'Please select',
 	C_PHP_BS_GRID_CRITERIA_DATE_EQUAL => 'equal',
+	C_PHP_BS_GRID_CRITERIA_DATE_GREATER_THAN => 'greater than',
 	C_PHP_BS_GRID_CRITERIA_DATE_GREATER_THAN_OR_EQUAL_TO => 'greater than or equal to'
 );
 $criteria_operator_task_date_start_from = sanitize_int('criteria_operator_task_date_start_from', C_PHP_BS_GRID_CRITERIA_DATE_IGNORE,
 	null, $a_criteria_operators_task_date_start_from);
 
 $criteria_task_date_start_from = null;
+$ts_criteria_task_date_start_from = null; // integer timestamp
 if($criteria_operator_task_date_start_from !== C_PHP_BS_GRID_CRITERIA_DATE_IGNORE) {
 	if(isset($_POST['criteria_task_date_start_from']) && $_POST['criteria_task_date_start_from']) {
 		$res_criteria_task_date_start_from = isValidDateTimeString($_POST['criteria_task_date_start_from'], $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['php_datetime_short'], null, $intl);
 		if($res_criteria_task_date_start_from) {
 			$criteria_task_date_start_from = $_POST['criteria_task_date_start_from'];
-			if(dateformat_i18n()) {
-				$criteria_task_date_start_from = $res_criteria_task_date_start_from; // integer timestamp
+			if(dateformat_intl()) {
+				$ts_criteria_task_date_start_from = $res_criteria_task_date_start_from; // integer timestamp
 			}
 		} else {
 			$criteria_operator_task_date_start_from = C_PHP_BS_GRID_CRITERIA_DATE_IGNORE;
@@ -553,19 +592,21 @@ $a_criteria_params_html_task_date_start_from = array(
 // task_date_start_until
 $a_criteria_operators_task_date_start_until = array(
 	C_PHP_BS_GRID_CRITERIA_DATE_IGNORE => 'Please select',
+	C_PHP_BS_GRID_CRITERIA_DATE_LESS_THAN => 'less than',
 	C_PHP_BS_GRID_CRITERIA_DATE_LESS_THAN_OR_EQUAL_TO => 'less than or equal to'
 );
 $criteria_operator_task_date_start_until = sanitize_int('criteria_operator_task_date_start_until', C_PHP_BS_GRID_CRITERIA_DATE_IGNORE,
 	null, $a_criteria_operators_task_date_start_until);
 
 $criteria_task_date_start_until = null;
+$ts_criteria_task_date_start_until = null; // integer timestamp
 if($criteria_operator_task_date_start_until !== C_PHP_BS_GRID_CRITERIA_DATE_IGNORE) {
 	if(isset($_POST['criteria_task_date_start_until']) && $_POST['criteria_task_date_start_until']) {
 		$res_criteria_task_date_start_until = isValidDateTimeString($_POST['criteria_task_date_start_until'], $conf['dt']['dateformat'][$_SESSION['user_dateformat']]['php_datetime_short'], null, $intl);
 		if($res_criteria_task_date_start_until) {
 			$criteria_task_date_start_until = $_POST['criteria_task_date_start_until'];
-			if(dateformat_i18n()) {
-				$criteria_task_date_start_until = $res_criteria_task_date_start_until; // integer timestamp
+			if(dateformat_intl()) {
+				$ts_criteria_task_date_start_until = $res_criteria_task_date_start_until; // integer timestamp
 			}
 		} else {
 			$criteria_operator_task_date_start_until = C_PHP_BS_GRID_CRITERIA_DATE_IGNORE;
@@ -613,6 +654,7 @@ $a_dg_params['dg_criteria'] = array(
 		'type' => 'multiselect_checkbox',
 		'sql_column' => 'task_type_id',
 		'column_value' => $criteria_task_type,
+		'sql_comparison_operator' => $criteria_operator_task_type,
 		'value_to_ignore' => array(1, 2),
 		'params_html' => $a_criteria_params_html_task_type
 	),
@@ -620,6 +662,7 @@ $a_dg_params['dg_criteria'] = array(
 		'type' => 'multiselect_checkbox',
 		'sql_column' => 'status_id',
 		'column_value' => $criteria_task_status,
+		'sql_comparison_operator' => $criteria_operator_task_status,
 		'value_to_ignore' => array(1, 2, 3, 4),
 		'params_html' => $a_criteria_params_html_task_status
 	),
@@ -633,6 +676,7 @@ $a_dg_params['dg_criteria'] = array(
 	'patients_id' => array(
 		'type' => 'autocomplete',
 		'sql_column' => 'patients_id',
+		'sql_comparison_operator' => $criteria_operator_patients_id,
 		'column_value' => $criteria_patients_id,
 		'params_html' => $a_criteria_params_html_patients_id
 	),
@@ -647,14 +691,14 @@ $a_dg_params['dg_criteria'] = array(
 		'type' => 'date',
 		'sql_column' => 'date_start',
 		'sql_comparison_operator' => $criteria_operator_task_date_start_from,
-		'column_value' => encode_usr_datetime_short($criteria_task_date_start_from),
+		'column_value' => (dateformat_intl() ? encode_usr_datetime_short($ts_criteria_task_date_start_from) : encode_usr_datetime_short($criteria_task_date_start_from)),
 		'params_html' => $a_criteria_params_html_task_date_start_from
 	),
 	'task_date_start_until' => array(
 		'type' => 'date',
 		'sql_column' => 'date_start',
 		'sql_comparison_operator' => $criteria_operator_task_date_start_until,
-		'column_value' => encode_usr_datetime_short($criteria_task_date_start_until),
+		'column_value' => (dateformat_intl() ? encode_usr_datetime_short($ts_criteria_task_date_start_until) : encode_usr_datetime_short($criteria_task_date_start_until)),
 		'params_html' => $a_criteria_params_html_task_date_start_until
 	)
 );
