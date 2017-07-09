@@ -9,7 +9,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.5 (02 Jul 2017)
+ * @version    0.9.6 (XX Jul 2017)
  *
  */
 class php_bs_grid {
@@ -993,6 +993,9 @@ HTML1;
 			// get columns for excel export and some properties
 			$a_excel_columns = array();
 			foreach($this->a_columns as $key => $column) {
+				if(array_key_exists('skip_in_excel_export', $column) && $column['skip_in_excel_export'] === true) {
+					continue;
+				}
 				if(array_key_exists('is_hidden', $column) && $column['is_hidden'] === true) {
 					continue;
 				}

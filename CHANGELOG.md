@@ -10,6 +10,11 @@ Project page https://github.com/pontikis/php_bs_grid
 License MIT https://raw.github.com/pontikis/php_bs_grid/master/MIT_LICENSE
 
 
+Upcoming Release 0.9.6 (XX July 2017)
+--------------------------
+
+* skip_in_excel_export column option #29
+
 Release 0.9.5 (02 July 2017)
 --------------------------
 
