@@ -905,7 +905,6 @@ HTML1;
 
 		$display_is_null_option = $params['display_is_null_option'];
 		if($display_is_null_option == C_PHP_BS_GRID_CRITERIA_MULTISELECT_CHECKBOX_DISPLAY_IS_NULL_YES) {
-			$is_null_wrapper_class = $params['is_null_wrapper_class'];
 			$is_null_class = $params['is_null_class'];
 			$is_null_style = $params['is_null_style'];
 			$is_null_label_id = $params['is_null_label_id'];
