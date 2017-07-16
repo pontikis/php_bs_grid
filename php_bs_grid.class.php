@@ -9,7 +9,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.6 (XX Jul 2017)
+ * @version    0.9.6 (16 Jul 2017)
  *
  */
 class php_bs_grid {

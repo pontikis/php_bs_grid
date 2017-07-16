@@ -1,10 +1,13 @@
 # php_bs_grid
 
-php datagrid with jquery, jquery-ui and bootstrap frontend
+php datagrid with jquery, jquery-ui and bootstrap frontend. Simple, secure, easy to use.
+
+Copyright Christos Pontikis http://www.pontikis.net
 
 Project page https://github.com/pontikis/php_bs_grid
 
-Simple, secure, easy to use.
+License [MIT](https://github.com/pontikis/php_bs_grid/blob/master/LICENSE)
+
 
 ## Features
 
@@ -79,16 +82,16 @@ Coming soon at http://www.pontikis.net/labs
 
 Desktop:
 
-![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/desktop.png)
+![desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/desktop.png)
 
 Nexus 5:
 
-![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/Nexus-5X.png)
+![Nexus-5X](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/Nexus-5X.png)
 
 iPhone 6:
 
-![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/iPhone-6.png)
+![iPhone-6](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/iPhone-6.png)
 
 iPad:
 
-![Desktop](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/iPad.png)
+![iPad](https://raw.githubusercontent.com/pontikis/php_bs_grid/master/screenshots/iPad.png)
