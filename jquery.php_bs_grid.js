@@ -1,6 +1,6 @@
 /**
  * @fileOverview php_bs_grid is a jQuery helper plugin for php_bs_grid class. Project page https://github.com/pontikis/php_bs_grid
- * @version 0.9.5 (02 Jul 2017)
+ * @version 0.9.6 (16 Jul 2017)
  * @licence MIT
  * @author Christos Pontikis http://www.pontikis.net
  * @copyright Christos Pontikis http://www.pontikis.net
@@ -703,19 +703,24 @@
                             autocomplete_params = criterion["params_html"]["autocomplete_params"];
                             // set value to filter field (id) after selection from the list
                             autocomplete_params.select = function(event, ui) {
+                                elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
                                 elem_criteria_filter.val(ui.item.id);
                             };
                             // mustMatch implementation
                             autocomplete_params.change = function(event, ui) {
                                 if(ui.item === null) {
+                                    elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
+                                    elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
                                     elem_criteria_autocomplete.val("");
                                     elem_criteria_filter.val('');
                                 }
                             };
+
                             elem_criteria_autocomplete.autocomplete(autocomplete_params);
 
                             // force select from list (mustMatch implementation)
                             elem_criteria_autocomplete.on('input', function() {
+                                elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
                                 elem_criteria_filter.val('');
                             });
 
@@ -726,8 +731,10 @@
 
                             if(criterion["params_html"]["display_is_null_option"] === settings.autocomplete_display_is_null_yes) {
                                 elem_is_null = $("#" + criterion["params_html"]["is_null_id"]);
-                                elem_is_null.click(function() {
-                                    if (elem_is_null.is(':checked')) {
+                                elem_is_null.on("click", function() {
+                                    elem_criteria_autocomplete = $("#" + criterion["params_html"]["autocomplete_id"]);
+                                    elem_criteria_filter = $("#" + criterion["params_html"]["filter_id"]);
+                                    if ($(this).is(':checked')) {
                                         elem_criteria_autocomplete.val("");
                                         elem_criteria_filter.val('');
                                         elem_criteria_autocomplete.prop("disabled", true);
