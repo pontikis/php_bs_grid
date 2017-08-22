@@ -10,6 +10,11 @@ Project page https://github.com/pontikis/php_bs_grid
 License [MIT](https://github.com/pontikis/php_bs_grid/blob/master/LICENSE)
 
 
+Upcoming Release 0.9.7 (XX XXX 2017)
+--------------------------
+
+* phpexcel: sheet name cannot be longer than 31 characters - let the default sheet name #31
+
 Release 0.9.6 (16 July 2017)
 --------------------------
 

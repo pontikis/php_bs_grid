@@ -9,7 +9,7 @@
  * @author     Christos Pontikis http://pontikis.net
  * @copyright  Christos Pontikis
  * @license    MIT http://opensource.org/licenses/MIT
- * @version    0.9.6 (16 Jul 2017)
+ * @version    0.9.7 (XX XXX 2017)
  *
  */
 class php_bs_grid {
@@ -1015,7 +1015,7 @@ HTML1;
 			}
 
 			$objPHPExcel = $this->php_excel;
-			$objPHPExcel->getActiveSheet()->setTitle($this->export_excel_basename);
+			$objPHPExcel->getActiveSheet();
 
 			// header
 			$column_index = 0;
